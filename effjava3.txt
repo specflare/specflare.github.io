@@ -1,0 +1,413 @@
+Effective Java 3rd Edition:
+
+Item 1: Consider static factory methods instead of constructors.
+	- static methods can have different names (ctors always have the same name).
+	- If you need multiple ctors with the same signature, replace them with factory methods.
+	- ability to create instance-controller classes. (limit the number of instances created from them through static factory methods).
+	- factory methods can return subclasses of the actual objects. those implmenentation can be hidden. (interface based frameworks)
+	- as of Java 8, interfaces can have static methods, so companion non-instantiable classes are no longer needed.
+	Examples:
+		Date d = Date.from(instant);
+		Set<Card> cards = EnumSet.of(JACK, QUEEN, KING);
+		
+Item 2: Consider a builder when faced with many ctor parameters. (works also against static factory methods).
+	- telescoping constructor pattern: you provide the ctor with only the required params, then another ctor with one more parameter, etc.(for 10 params, you have 10 different ctors).
+	
+Item 3: Enforce the Singleton property with a private constructor
+	- a default constructor is only generated if there are no other ctors.
+	
+Item 4: Enforce noninstantiability with a private constructor.
+	- java.util.Collections contains static methods for classes deriving from an interface Collection. As with Java8, such static methods can be put directly into the interface.
+	- Attempting to enforce noninstantiability by making a class abstract does not work. The class can be subclassed and the subclass instantiated.
+	
+Item 5:
+	
+
+Item 10: Obey the general contract when overriding equals().
+	- 
+
+Item 11: Always override hashCode() when you override equals.
+
+Item 12: Always override toString().
+
+Item 13: Override clone() judiciously.
+	- Its primary flaw is that it lacks a clone method, and Object’s clone method is protected. You cannot, without resorting to reflection, invoke clone on an object merely because it implements Cloneable.
+	- Cloneable determines the behavior of Object’s protected clone implementation: if a class implements Cloneable, Object’s clone method returns a field-by-field copy of the object; otherwise it throws CloneNotSupportedException.
+	- Though the specification doesn’t say it, in practice, a class implementing Cloneable is expected to provide a properly functioning public clone method.
+	- Immutable classes should never provide a clone method because it would merely encourage wasteful copying.
+	- clone() is very usefull for cloning an array.
+	- In order to make a class cloneable, it may be necessary to remove final modifiers from some fields.
+	- Public clone methods should omit the throws clause. (Object’s clone method is declared to throw CloneNotSupportedException, but overriding methods need not).
+	- protected final Object clone() throws CloneNotSupportedException { throw new CloneNotSupportedException(); } // 
+	- A better approach to object copying is to provide a copy constructor or copy factory. they don’t rely on a risk-prone extralinguistic object creation mechanism;
+		they don’t demand unenforceable adherence to thinly documented conventions; they don’t conflict with the proper use of final fields;
+		they don’t throw unnecessary checked exceptions; and they don’t require casts.
+
+Item 14: Consider implementing Comparable (int compareTo() method from interface Comparable)
+	- implementation must be commutative, transitive and reflexive.
+	- Some collection classes depend on the comparable functionality to work properly.
+
+PART 4: Classes and interfaces.
+Item 15: Minimize the accessibility of classes and members.
+	- make each class or member as inaccessible as possible. In other words, use the lowest possible access level consistent with the proper functioning of the software that you are writing.
+	- For members of public classes, a huge increase in accessibility occurs when the access level goes from package-private to protected. A protected member is part of the class’s exported API and must be supported forever. The need for protected members should be relatively rare.
+	- If a method overrides a superclass method, it cannot have a more restrictive access level in the subclass than in the superclass.
+	- A special case of this rule is that if a class implements an interface, all of the class methods that are in the interface must be declared public in the class.
+	- Classes with public mutable fields are not generally threadsafe.
+
+Item 16: In public classes, use accessor methods, not public fields.
+	- if a class is accessible outside its package, provide accessor methods to preserve the flexibility to change the class’s internal representation.
+	- if a class is package-private or is a private nested class, there is nothing inherently wrong with exposing its data fields.
+
+Item 17: Minimize mutability (immutable classes: String, BigInteger, BitDecimal)
+	- Immutable objects are inherently thread-safe; they require no synchronization.
+	- Immutable classes need not and should not provide a clone method or copy constructor. (String has a copy ctor even if its not needed).
+	- Immutable objects provide failure atomicity for free.
+	- The major disadvantage of immutable classes is that they require a separate object for each distinct value.
+
+Item 18: Favor composition over inheritance
+	- When you extend a class and override some of its methods, you don't know when the base class calls one of your overriden methods in the subclass. (this is the same problem as not calling virtual methods from ctors in C++)
+	
+Item 19: Design and document for inheritance or else prohibit it.
+	- The only way to test a class designed for inheritance is to write subclasses.
+	- neither clone nor readObject may invoke an overridable method, directly or indirectly. (they both behave similar to ctors)
+	- Designing a class for inheritance requires great effort and places substantial limitations on the class.
+	- The best solution to this problem is to prohibit subclassing in classes that are not designed and documented to be safely subclassed.
+	- There are two ways to prohibit subclassing. The easier of the two is to declare the class final. The alternative is to make all the constructors private or package-private and to add public static factories in place of the constructors.
+
+Item 20: Prefer interfaces to abstract classes
+	- Existing classes can easily be retrofitted to implement a new interface, because a class can implement as many interfaces as needed, but can only extend one class.
+	- Interfaces allow for the construction of nonhierarchical type frameworks. (i.e. a class can implement multiple interfaces)
+	- good documentation is absolutely essential in a skeletal implementation (like AbstractSet, AbstractMap, AbstractList)
+	
+Item 21: Design interfaces for posterity.
+	- Many new default methods were added to the core collection interfaces in Java 8, primarily to facilitate the use of lambdas.
+	- In the presence of default methods, existing implementations of an interface may compile without error or warning but fail at runtime.
+	- While it may be possible to correct some interface flaws after an interface is released, you cannot count on it.
+	
+Item 22: Use interfaces only to define types.
+	- The constant interface pattern is a poor use of interfaces. (interfaces without methods, only with defined constants in it.)
+	- In summary, interfaces should be used only to define types. They should not be used merely to export constants.
+	
+Item 23: Prefer class hierarchies to tagged classes.
+	- A tagged class is just a pallid imitation of a class hierarchy. (tagged class use an enum to reprosent the type of the instance).
+	
+Item 24: Favor static member classes over nonstatic.
+	- 4 types of nested classes: static nested classes, non-static nested classes, anonymous classes, local classes (can be declared anywhere a local variable can, like inside a function).
+	- If you declare a member class that does not require access to an enclosing instance, always put the static modifier in its declaration. (Reason: non-static classes have access to the fields of the enclosing class, even private ones, thus it keeps a reference to its this pointer, and prevents the GC from cleaning it up sometimes).
+	- Node class inside the LinkedList for instance should be static.
+	
+	Anonymous classes:
+		- You can’t declare an anonymous class to implement multiple interfaces or to extend a class and implement an interface at the same time.
+		- You can’t perform instanceof tests or do anything else that requires you to name the class.
+		- Clients of an anonymous class can’t invoke any members except those it inherits from its supertype. Because anonymous classes occur in the midst of expressions, they must be kept short—about ten lines or fewer—or readability will suffer.
+		- Before lambdas were added to Java (Chapter 6), anonymous classes were the preferred means of creating small function objects and process objects on the fly, but lambdas are now preferred.
+	
+Item 25: Limit source files to a single top-level class
+	- Never put multiple top-level classes or interfaces in a single source file, because the outcome of your program may depend on the order in which the compiler compiles the .java files.
+
+
+*** Chapter 5: GENERICS
+
+Item 26: Don’t use raw types (i.e. private final Collection stamps = ...)
+	- do this instead: private final Collection<Stamp> stamps = ... ;
+	- you lose type safety if you use a raw type such as List, but not if you use a parameterized type such as List<Object>.
+	- A function accepting a List param can be passed a List<String> param, but a function accepting a List<Object> param cannot be passed a List<String> param.
+	- unbounded wildcard types (List<?>). If you want to use a generic type but you don’t know or care what the actual type parameter is, you can use a question mark instead.
+	- You must use raw types in class literals. (List.class, String[].class, int.class are all legal, but List<String>.class is not legal)
+	- unbounded wildcard types: List<? extends Number>
+
+Item 27: Eliminate unchecked warnings.
+	- If you can’t eliminate a warning, but you can prove that the code that provoked the warning is typesafe, then (and only then) suppress the warning with an @SuppressWarnings("unchecked") annotation.
+	- Always use the SuppressWarnings annotation on the smallest scope possible.
+	- Always write a comment to justify the usage of @SuppressWarnings("unchecked").
+
+Item 28: Prefer lists to arrays. Reason: arrays are covariant and generic Lists are invariant
+	- with an array you find out that you’ve made a mistake at runtime; with a list, you find out at compile time.
+
+	Object[] objectArray = new Long[1];
+	objectArray[0] = "I don't fit in"; // Throws ArrayStoreException
+	
+	// Won't compile!
+	List<Object> ol = new ArrayList<Long>(); // Incompatible types
+	ol.add("I don't fit in");
+	
+	- Arrays are reified. This means that arrays know and enforce their element type at runtime.
+	- Generics, by contrast, are implemented by erasure. This means that they enforce their type constraints only at compile time and discard (or erase) their element type information at runtime.
+	- arrays and generics do not mix well. For example, it is illegal to create an array of a generic type, a parameterized type, or a type parameter.
+	- Arrays are covariant and reified; generics are invariant and erased. As a consequence, arrays provide runtime type safety but not compile-time type safety, and vice versa for generics.
+
+Item 29: Favor generic types.
+Item 30: Favor generic methods.
+Item 31: Use bounded wildcards to increase API flexibility.
+	- because generic types are invariant, i.e. there is no relationship between List<Object> and List<String>, we need bounded wildcard types like this:
+		public void pushAll(Iterable<? extends E> src), so that we can pass a List<Integer> arg to a Stack<Number> container.
+	- public void popAll(Collection<? super E> dst): allow you to pass a List<Object> to a stack<Number>. (popAll is a member of Stack)
+	- For maximum flexibility, use wildcard types on input parameters that represent producers or consumers.
+	- PECS: stands for producer-extends, consumer-super.
+	- Do not use bounded wildcard types as return types. Rather than providing additional flexibility for your users, it would force them to use wildcard types in client code.
+	- Properly used, wildcard types are nearly invisible to the users of a class. They cause methods to accept the parameters they should accept and reject those they should reject.
+	- If the user of a class has to think about wildcard types, there is probably something wrong with its API.
+	- As a rule, if a type parameter appears only once in a method declaration, replace it with a wildcard.
+
+Item 32: Combine generics and varargs judiciously.
+	- static void dangerous(List<String>... stringLists) // Mixing generics and varargs can violate type safety!
+	- it is unsafe to store a value in a generic varargs array parameter.
+	- the Java libraries export several such methods, including:
+		- Arrays.asList(T... a),
+		- Collections.addAll(Collection<? super T> c, T...elements)
+		- EnumSet.of(E first, E... rest).
+	- it is unsafe to give another method access to a generic varargs parameter array, with the exceptions:
+		- another varargs method that is correctly annotated with @SafeVarargs.
+		- method that merely computes some function of the contents of the array.
+	- Use @SafeVarargs on every method with a varargs parameter of a generic or parameterized type, so its users won’t be burdened by needless and confusing compiler warnings.
+
+Item 33: Consider typesafe heterogeneous containers.
+	
+	
+*** CHAPTER 6. ENUMS AND ANNOTATIONS
+Item 34: Use enums instead of int constants.
+	- Java’s enum types are full-fledged classes that export one instance for each enumeration constant via a public static final field, not ints like in other languages.
+	- you can translate enums into printable strings by calling their toString method.
+	- To associate data with enum constants, declare instance fields and write a constructor that takes the data and stores it in the fields.
+	- Enums are by their nature immutable, so all fields in a righ enum should be final.
+	- enum values can be iterated like this: for (Planet p : Planet.values()), where Planet is an enum type.
+	
+	
+Item 35: Use instance fields instead of ordinals.
+	- Never derive a value associated with an enum from its ordinal; store it in an instance field instead.
+	- ordinal() method: returns the index of an enum value within an enum.
+	
+Item 36: Use EnumSet instead of bit fields.
+	- public enum Style { BOLD, ITALIC, UNDERLINE, STRIKETHROUGH }
+		public void applyStyles(Set<Style> styles) { ... } // any set could be passed here, but EnumSet is the best.
+		text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));
+	- While it seems likely that all clients would pass an EnumSet to the method, it is generally good practice to accept the interface type rather than the implementation type.
+	
+Item 37: Use EnumMap instead of ordinal indexing.
+	- There is a very fast Map implementation designed for use with enum keys, known as java.util.EnumMap.
+	- it is rarely appropriate to use ordinals to index into arrays: use EnumMap instead.
+	If the relationship you are representing is multidimensional, use EnumMap<..., EnumMap<...>>. (i.e. a transition matrix with states defined as enum)
+	
+Item 38: Emulate extensible enums with interfaces.
+Item 39: Prefer annotations to naming patterns.
+Item 40: Consistently use the @Override annotation.
+	- use the Override annotation on every method declaration that you believe to override a superclass declaration.
+Item 41: Use marker interfaces to define types.
+	marker interfaces define a type that is implemented by instances of the marked class; marker annotations do not.
+	-Serializable interface is a marker interface. ObjectOutputStream.write accepts an Object instead of a Serializable. Therefore the system is broken because you can serialize an object that does not implement Serializable. (it fails at runtime, not at compile-time).
+	
+*** CHAPTER 7. LAMBDAS AND STREAMS
+Item 42: Prefer lambdas to anonymous classes.
+	- Collections.sort(words, (s1, s2) -> Integer.compare(s1.length(), s2.length()));
+	- Omit the types of all lambda parameters unless their presence makes your program clearer.
+	- lambdas lack names and documentation; if a computation isn’t self-explanatory, or exceeds a few lines, don’t put it in a lambda.
+
+Item 43: Prefer method references to lambdas.
+	- Where method references are shorter and clearer, use them; where they aren’t, stick with lambdas.
+	
+Item 44: Favor the use of standard functional interfaces
+	- If one of the standard functional interfaces does the job, you should generally use it in preference to a purpose-built functional interface.
+	UnaryOperator<T> T apply(T t) 			String::toLowerCase
+	BinaryOperator<T> T apply(T t1, T t2)	BigInteger::add
+	Predicate<T> boolean test(T t)			Collection::isEmpty	
+	Function<T,R> R apply(T t) 				Arrays::asList
+	Supplier<T> T get() 					Instant::now
+	Consumer<T> void accept(T t)
+	- Always annotate your functional interfaces with the @FunctionalInterface annotation: it obliges your interface to have exactly one abstract public method (that is bound to the lambda).
+
+Item 45: Use streams judiciously.
+	- Stream pipelines are evaluated lazily: evaluation doesn’t start until the terminal operation is invoked.
+	- Overusing streams makes programs hard to read and maintain.
+	- In the absence of explicit types, careful naming of lambda parameters is essential to the readability of stream pipelines.
+	- When you start using streams, you may feel the urge to convert all your loops into streams, but resist the urge.
+	- If you’re not sure whether a task is better served by streams or iteration, try both and see which works better.
+
+Item 46: Prefer side-effect-free functions in streams.
+	The forEach operation should be used only to report the result of a stream computation, not to perform the computation.
+	- It is customary and wise to statically import all members of Collectors (toList, toMap, toSet, etc) because it makes stream pipelines more readable.
+
+General:
+	- Classes can only be static if they are nested.
+	- check-for-null can be done with Objects.requireNonNull(ref, "Custom msg,");// throws an exception otherwise.
+	- Immutability, Encapsulation, 
+	- a non-reifiable type is one whose runtime representation has less information than its compile-time representation,
+	
+*** CHAPTER 8. METHODS
+Item 49: Check parameters for validity.
+	- if params are not good, you may throw: IllegalArgumentException, IndexOutOfBoundsException, or NullPointerException.
+	- The Objects.requireNonNull method, added in Java 7, is flexible and convenient, so there’s no reason to perform null checks manually anymore.
+	
+Item 50: Make defensive copies when needed.
+	- You must program defensively, with the assumption that clients of your class will do their best to destroy its invariants.
+	- it is essential to make a defensive copy of each mutable parameter to the constructor, so that even if the client modifies a mutable param, it will not change in your class.
+	- Defensive copies are made before checking the validity of the parameters, and the validity check is performed on the copies rather than on the originals. This prevents your program from a TOCTOU attack (time-of-check time-of-use window of vulnerability).
+	- do not use the clone method to make a defensive copy of a parameter whose type is subclassable (non final) by untrusted parties.
+	- getters should return defensive copies of mutable internal fields, so that they cannot be modified from the outside.
+	- Whether or not your class is immutable, you should think twice before returning a reference to an internal component that is mutable. Chances are, you should return a defensive copy.
+	
+Item 51: Design method signatures carefully
+	- For parameter types, favor interfaces over classes.
+	- Prefer two-element enum types to boolean parameters.
+	
+Item 52: Use overloading judiciously.
+	- the choice of which overloading to invoke is made at compile time.
+	- selection among overloaded methods is static, while selection among overridden methods is dynamic.
+	- A safe, conservative policy is never to export two overloadings with the same number of parameters. you can always give methods different names instead of overloading them.
+	- Do not overload methods to take different functional interfaces in the same argument position.
+	
+Item 53: Use varargs judiciously.
+Item 54: Return empty collections or arrays, not nulls.
+	- removes the need to check for nulls in client code.
+	- Collections.emptyList, Collections.emptySet, Collections.emptyMap.
+	
+Item 55: Return optionals judiciously.
+	- The Optional<T> class (since Java 8) represents an immutable container that can hold either a single non-null T reference or nothing at all.
+	- Never return a null value from an Optional-returning method: it defeats the entire purpose of the facility.
+	- Optionals are similar in spirit to checked exceptions (i.e. they force the user to treat the case of a no-value)
+	- Element lastNobleGas = max(Elements.NOBLE_GASES).get(); Toy myToy = max(toys).orElseThrow(TemperTantrumException::new); String lastWordInLexicon = max(words).orElse("No words...");
+	- Convert a Stream<Optional<T>> to a Stream<T>: streamOfOptionals.filter(Optional::isPresent).map(Optional::get); or streamOfOptionals..flatMap(Optional::stream)
+	- Container types, including collections, maps, streams, arrays, and optionals should not be wrapped in optionals.
+	- you should declare a method to return Optional<T> if it might not be able to return a result and clients will have to perform special processing if no result is returned.
+	- You should never return an optional of a boxed primitive type. Special classes for primitives: OptionalInt, OptionalLong, and OptionalDouble: to prevend double boxing with Int, Long, Double.
+	- it is almost never appropriate to use an optional as a key, value, or element in a collection or array.
+
+Item 56: Write doc comments for all exposed API elements.
+	
+*** CHAPTER 9. GENERAL PROGRAMMING.
+Item 57: Minimize the scope of local variables.
+Item 58: Prefer for-each loops to traditional for loops (for collections).
+Item 59: Know and use the libraries
+	- By using a standard library, you take advantage of the knowledge of the experts who wrote it and the experience of those who used it before you.
+	- As of Java 7, you should no longer use Random. For most uses, the random number generator of choice is now ThreadLocalRandom.
+
+Item 60: Avoid float and double if exact answers are required
+	- The float and double types are particularly ill-suited for monetary calculations. They cannot represent 0.1 (or any other negative power of 10).
+	- use BigDecimal (it’s a lot slower), int, or long for monetary calculations.
+
+Item 61: Prefer primitive types to boxed primitives.
+	- Applying the == operator to boxed primitives is almost always wrong (compares references instead of values).
+	- when you mix primitives and boxed primitives in an operation, the boxed primitive is auto-unboxed.
+	- Autoboxing reduces the verbosity, but not the danger, of using boxed primitives.
+	- when your program does unboxing, it can throw a NullPointerException.
+	
+Item 62: Avoid strings where other types are more appropriate.
+Item 63: Beware the performance of string concatenation.
+	- Using the string concatenation operator repeatedly to concatenate n strings requires time quadratic in n.
+	- This is an unfortunate consequence of the fact that strings are immutable (Item 17). When two strings are concatenated, the contents of both are copied.
+	
+Item 64: Refer to objects by their interfaces.
+	- If appropriate interface types exist, then parameters, return values, variables, and fields should all be declared using interface types.
+	- If you get into the habit of using interfaces as types, your program will be much more flexible.
+	- It is entirely appropriate to refer to an object by a class rather than an interface if no appropriate interface exists.
+	- If there is no appropriate interface, just use the least specific class in the class hierarchy that provides the required functionality.
+	
+Item 65: Prefer interfaces to reflection.
+	- Reflection allows one class to use another, even if the latter class did not exist when the former was compiled. This power, however, comes at a price:
+		* You lose all the benefits of compile-time type checking
+		* The code required to perform reflective access is clumsy and verbose.
+		* Performance suffers. Reflective method invocation is much slower than normal method invocation.
+	
+	- You can obtain many of the benefits of reflection while incurring few of its costs by using it only in a very limited form.
+	- There are a few sophisticated applications that require reflection. Examples include code analysis tools and dependency injection frameworks. Even such tools have been moving away from reflection of late, as its disadvantages become clearer.
+	- Reflection is a powerful facility that is required for certain sophisticated system programming tasks, but it has many disadvantages.
+	- If you are writing a program that has to work with classes unknown at compile time, you should, if at all possible, use reflection only to instantiate objects, and access the objects using some interface or superclass that is known at compile time.
+
+Item 66: Use native methods judiciously.
+	- It is rarely advisable to use native methods for improved performance.
+	
+Item 67: Optimize judiciously.
+	- Strive to write good programs rather than fast ones.
+	- It is a very bad idea to warp an API to achieve good performance.
+	- Measure performance before and after each attempted optimization.
+	- The “abstraction gap” between what the programmer writes and what the CPU executes is greater in Java than other languages, which makes it even more difficult to reliably predict the performance consequences of optimizations.
+	- no amount of low-level optimization can make up for a poor choice of algorithm.
+	
+Item 68: Adhere to generally accepted naming conventions.
+
+*** CHAPTER 10. EXCEPTIONS
+Item 69: Use exceptions only for exceptional conditions.
+	- Placing code inside a try-catch block inhibits certain optimizations that JVM implementations might otherwise perform.
+	- Exceptions are, as their name implies, to be used only for exceptional conditions; they should never be used for ordinary control flow.
+	- A well-designed API must not force its clients to use exceptions for ordinary control flow.
+
+Item 70: Use checked exceptions for recoverable conditions and runtime exceptions for programming errors.
+	- Java provides three kinds of throwables: checked exceptions, runtime exceptions, and errors.
+	- Use checked exceptions for conditions from which the caller can reasonably be expected to recover.
+	- There are two kinds of unchecked throwables: runtime exceptions and errors.
+	- all of the unchecked throwables you implement should subclass RuntimeException (directly or indirectly).
+
+Item 71: Avoid unnecessary use of checked exceptions.
+	- METHODS THROWING CHECKED EXCEPTIONS CAN’T BE USED DIRECTLY IN STREAMS.
+
+Item 72: Favor the use of standard exceptions.
+	- IllegalArgumentException, IllegalStateException, NullPointerException, IndexOutOfBoundsException, ConcurrentModificationException, UnsupportedOperationException
+	- Do not reuse Exception, RuntimeException, Throwable, or Error directly.
+
+Item 73: Throw exceptions appropriate to the abstraction.
+	- higher layers should catch lower-level exceptions and, in their place, throw exceptions that can be explained in terms of the higher-level abstraction.
+
+Item 74: Document all exceptions thrown by each method
+	
+Item 75: Include failure-capture information in detail messages
+	- To capture a failure, the detail message of an exception should contain the values of all parameters and fields that contributed to the exception.
+	- do not include passwords, encryption keys, and the like in detail messages.
+
+Item 76: Strive for failure atomicity
+	- Generally speaking, a failed method invocation should leave the object in the state that it was in prior to the invocation.
+
+Item 77: Don’t ignore exceptions
+	- If you choose to ignore an exception, the catch block should contain a comment explaining why it is appropriate to do so, and the variable should be named ignored.
+	
+*** CHAPTER 11. CONCURRENCY
+Item 78: Synchronize access to shared mutable data.
+	- Do not use Thread.stop().
+	- When multiple threads share mutable data, each thread that reads or writes the data must perform synchronization.
+
+Item 79: Avoid excessive synchronization.
+	- To avoid liveness and safety failures, never cede control to the client within a synchronized method or block. In other words, inside a synchronized region, do not invoke a method that is designed to be overridden, or one provided by a client in the form of a function object.
+
+Item 80: Prefer executors, tasks, and streams to threads
+	- When you work directly with threads, a Thread serves as both a unit of work and the mechanism for executing it. In the executor framework, the unit of work and the execution mechanism are separate.
+	- The key abstraction is the unit of work, which is the task. There are two kinds of tasks: Runnable and its close cousin, Callable
+
+Item 81: Prefer concurrency utilities to wait and notify
+	- Given the difficulty of using wait and notify correctly, you should use the higher-level concurrency utilities instead.
+	- There is seldom, if ever, a reason to use wait and notify in new code.
+	- if used, wait() should always be called from within a while() {...}
+
+CHAPTER 12. SERIALIZATION
+Item 85: Prefer alternatives to Java serialization.
+	- You open yourself up to attack whenever you deserialize a byte stream that you don’t trust.
+	- The best way to avoid serialization exploits is never to deserialize anything.
+	- There is no reason to use Java serialization in any new system you write.
+	
+Item 86: Implement Serializable with great caution.
+	- A major cost of implementing Serializable is that it decreases the flexibility to change a class’s implementation once it has been released.
+	- A second cost of implementing Serializable is that it increases the likelihood of bugs and security holes.
+	- Classes designed for inheritance (Item 19) should rarely implement Serializable, and interfaces should rarely extend it.
+	- Inner classes (Item 24) should not implement Serializable. They use compiler-generated synthetic fields to store references to enclosing instances and to store values of local variables from enclosing scopes.
+	- Using the default serialized form when an object’s physical representation differs substantially from its logical data content has four disadvantages:
+		* It permanently ties the exported API to the current internal representation.
+		* It can consume excessive space.
+		* It can consume excessive time. The serialization logic has no knowledge of the topology of the object graph, so it must go through an expensive graph traversal.
+		* It can cause stack overflows. The default serialization procedure performs a recursive traversal of the object graph, which can cause stack overflows even for moderately sized object graphs.
+	- Regardless of what serialized form you choose, declare an explicit serial version UID in every serializable class you write.
+	- Do not change the serial version UID unless you want to break compatibility with all existing serialized instances of a class.
+	
+
+	
+Item 88: Write readObject methods defensively
+	- To summarize, anytime you write a readObject method, adopt the mind-set that you are writing a public constructor that must produce a valid instance regardless of what byte stream it is given.
+	
+	
+Java known problems:
+	- Cloneable interface is a design mistake because it is a marker interface and decides if method clone() from class Object is overriden or not.
+	
+Roadmap:
+	Spring, SpringBoot
+	Spring Reactor (Reactive programming)
+	Kafka, ActiveMQ (JMS), 
+	
+	
+Special classes: Optional<T>, Objects.requireNonNull, EnumMap, EnumSet.

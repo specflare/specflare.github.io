@@ -1,0 +1,6 @@
+Linux commands:
+
+netstat -nlpu 		; list all UDP listening connections
+netstat -nlpt		; list all TCP listening connections
+
+apt list --upgradable	; see upgradable packages

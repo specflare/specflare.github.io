@@ -1,0 +1,67 @@
+ElasticSearch / Logstash / Kibana:
+
+General:
+	- Uses Lucene at its core, like Apache Solr.
+	- Various set of APIs: HTTP RESTful API, Native Java API. All APIs perform automatic node operation rerouting.
+	- No need for upfront document schema definition (like a NoSql database).
+	
+Cluster:
+	- a collection of ES nodes (or servers), as many as you like.
+	- its default name is elasticsearch, unless configured otherwise.
+	
+Node:
+	- identified by a name (a marvel character by default)
+	- starging a single node will create a cluster named elasticsearch.
+
+Index:
+	- a collection of documents (or types).
+	- think of it as a database in a RDBS.
+	- you can define as many indices as you want in your cluster.
+	
+Type:
+	- a class/category of similar documents.
+	- can be considered a table in our database.
+	- an index can have one or more types defined, each with their own mapping.
+	
+Mapping:
+	- It is the process of defining how a document, and the fields it contains, are stored and indexed. For instance, use mappings to define:	
+		which string fields should be treated as full text fields.
+		which fields contain numbers, dates, or geolocations.
+		whether the values of all fields in the document should be indexed into the catch-all _all field.
+
+Document:
+	- a basic unit of information that can be indexed, expressed in JSON format
+	- consists of key/value pairs that can be strings, ints, dates, etc.
+	- you can store as many documents as you like within an index.
+	
+Shards:
+	- this is useful when a node contains more data than the HDD of a node can store. (e.g. 1 index contains 1TB of data but the node has a HDD of 500GB)
+	- A shard is a fully independent and functional index.
+	- Can be stored on any node in a cluster.
+	- The number of shards can be specified when creating an index (default 5).
+	- allows to scale horizontally by content volume.
+	- allows to parallelise operations across shards which increases the performance of an index.
+	
+Replicas:
+	- while shards improve the scalability and the content volume for indices, replicas ensure high availability.
+	- It is a copy of a shard, which can take over in case a node or a shard fails.
+	- A replica never resides on the same node as the original shard.
+	- Allows scaling search volume because queries can be executed on all replicas in parallel.
+	- By default, ElasticSearch adds 5 primary shards and 1 replica for each index.
+
+SEARCHING (Relevancy & Scoring)
+	- 2 ways of searching: query strings & language DSL.
+	- Query string: search by sending parameters through the REST request URI as query params. Used for simple queries.
+	- Query DSL: Search by defining queries within the request body in Json (not in the URL).
+		- Supports more features than the query string approach.
+		- used for more advanced queries.
+		- Often easier to read as the queries are defined in Json.
+		
+Typef of queries:
+	- Leaf queries: look for a particular value in particular fields for instance pasta in product names.
+		- can be used with compound queries to construct compound queries.
+		
+	- Compound queries: wrap leaf clauses or even other compound query clauses.
+		- used to compound many queries in a logical fashion.
+		
+	- Full text queries: looking for a term in a text. (inverted index, etc)

@@ -1,0 +1,4 @@
+gradlew tasks
+gradlew clean
+gradlew assemble
+

@@ -1,0 +1,100 @@
+Hibernate:
+	- An ORM tool (initially) (Object/Relational Mapping)
+		- Used in the data layer of applications
+	- Implements JPA
+	- Hibernate uses JDBC internally to connect to the database (Hibernate needs the specific JDBC driver for the DB in use: it may be any DB)
+	
+The problem
+	- Mapping member variables to columns (cope with changing DB structure)
+	- Mapping relationships.
+	- Handling data types. (changing column types)
+	- Managing changes to object state.
+	
+In order to make an object persistent with Hibernate, we need to annotate it.
+- basically Hibernate skips the programmer from writing the DAO layer by himself (SQL code to cope with object modifcation/addition/changes)
+
+- We mark the class with @Entity (the class that we want to have persisted). @Id for the primary key inside the class definition.
+- When Hibernate saves an object to a table, if the table is not created, it will create it automatically.
+- Objects can be saved in Hibertanate by means of sessions. Sessions support transactions.
+
+The purpose of Hibernate is to address the following problems:
+	Granularity: Sometimes you will have an object model, which has more classes than the number of corresponding tables in the database.
+	Inheritance: RDBMSs do not define anything similar to Inheritance, which is a natural paradigm in object-oriented programming languages.
+	Identity: An RDBMS defines exactly one notion of 'sameness': the primary key. Java, however, defines both object identity (a==b) and object equality (a.equals(b)).
+	Associations: Object-oriented languages represent associations using object references whereas an RDBMS represents an association as a foreign key column.
+	Navigation: The ways you access objects in Java and in RDBMS are fundamentally different.
+
+Configuration is done in: hibernate.properties, or as an XML file named hibernate.cfg.xml.
+Hibernate contains mapping files (*.hbm.xml) specified using tag <mapping> in the XML configuration.
+
+Sessions:
+	- Session class is used to get a physical connection with a database. The Session object is lightweight and designed to be instantiated each time an interaction is needed with the database. Persistent objects are saved and retrieved through a Session object.
+	- Instances may exist in one of the following three states at a given point in time:
+		* transient − A new instance of a persistent class, which is not associated with a Session and has no representation in the database and no identifier value is considered transient by Hibernate.
+		* persistent − You can make a transient instance persistent by associating it with a Session. A persistent instance has a representation in the database, an identifier value and is associated with a Session.
+		* detached − Once we close the Hibernate Session, the persistent instance will become a detached instance.
+
+
+Mapping files:
+	- each mapping files enumerates each class attributes, their type, and their corresponding column in the table.
+
+Hibernate - Mapping Types: the types specified in the XML mapping file are not Java types. They are not SQL types either. They are Hibernate types, and there is a mapping between HB types and Java/SQL types.
+
+
+Annotations:
+	- Hibernate annotations are the newest way to define mappings without the use of XML file. For greater flexibility, XML is still recomanded.
+	- hibernate-annotations.jar is required for annotations to work in Hibernate.
+
+	create table EMPLOYEE (
+	   id INT NOT NULL auto_increment,
+	   first_name VARCHAR(20) default NULL,
+	   last_name  VARCHAR(20) default NULL,
+	   salary     INT  default NULL,
+	   PRIMARY KEY (id)
+	);
+	
+	@Entity
+	@Table(name = "EMPLOYEE")
+	public class Employee {
+	   @Id @GeneratedValue
+	   @Column(name = "id")
+	   private int id;
+
+	   @Column(name = "first_name")
+	   private String firstName;
+
+	   @Column(name = "last_name")
+	   private String lastName;
+
+	   @Column(name = "salary")
+	   private int salary;  
+	}
+	
+ManyToMany relation: 
+	@ManyToMany, @JoinTable and @JoinColumn
+	
+	@Entity
+	@Table(name = "Employee")
+	public class Employee { 
+		@ManyToMany(cascade = { CascadeType.ALL })
+		@JoinTable(
+			name = "Employee_Project", 
+			joinColumns = { @JoinColumn(name = "employee_id") }, 
+			inverseJoinColumns = { @JoinColumn(name = "project_id") }
+		)
+		Set<Project> projects = new HashSet<>();
+	}
+	
+	@Entity
+	@Table(name = "Project")
+	public class Project {    
+		@ManyToMany(mappedBy = "projects")
+		private Set<Employee> employees = new HashSet<>();
+	}
+
+Sample classes in Hibernate:
+	Session, SessionFactory, Transaction.
+
+Exceptions: HibernateException 
+
+https://www.youtube.com/watch?v=iaSd_yK9xaw&list=PL4AFF701184976B25&index=6

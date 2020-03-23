@@ -1,0 +1,54 @@
+Learning Spark - O'Reilly:
+Ch2: Downloading spark and getting started
+	- open bin/spark-shell for the Scala Shell
+	- Spark is a library that is used from a driver program/function. Driver programs access Spark through a SparkContext object, which represents a connection to a computing cluster
+	- In the Spark shell, the SparkContext is already created, and available through the "sc" variable.
+	- The driver program typically manages a number of nodes called executors
+
+val lines = sc.textFile("README.md")
+val pythonLines = lines.filter(_.contains("Python"))
+pythonLines.first
+
+# word count example:
+val words = fileLines.flatMap(_.split(" ")) // convert lines into words
+val counts = words.map(word => (word, 1)).reduceByKey{case (x, y) => x + y}
+
+Ch3: Programming with RDDs:
+	- An RDD in Spark is simply an immutable distributed collection of objects. 
+	- Transformation & Action for RDDs. Transformations like map, filter, reduce return a new RDD. Action triggers the computation of the pipeline.
+	- Transformations return RDDs, whereas actions return some other data type.
+	- Although you can define new RDDs any time, Spark computes them only in a lazy fashion—that is, the first time they are used in an action.
+	- RDDs are automatically recomputed everytime a action is applied on them. You can also persist()/cache() them, and they won't.
+	- The ability to always recompute an RDD is actually why RDDs are called “resilient.” When a machine holding RDD data fails, Spark uses this ability to recompute the missing partitions, transparent to the user.
+	- Finally, as you derive new RDDs from each other using transformations, Spark keeps track of the set of dependencies between different RDDs, called the lineage graph.
+	- RDDs operations (for binary ops, both RDDs must have the same type):
+		.distinct()
+		.union(rdd2)
+		.intersection(rdd2)
+		.subtract(rdd2)
+		.carthesian(rdd2) // carthesian product, returns a RDD of pairs.
+		
+	- RDDs actions
+		.reduce((x, y) => x+y)	// returns a single elem of type the same as the elems of RDD.
+		.fold((x, y) => x+y) : similar to reduce() but takes a "zero value" that is used as accumulator, eg. 0 for +, 1 for *, etc.
+		.collect() gathers all RDD in memory
+		.take(n) : keeps only n elements from the RDD.
+		
+	- RDDs can be persisted in memory/disk:
+		- persist(StorageLevel.MEMORY_ONLY)
+		- persist(StorageLevel.MEMORY_ONLY_SER)
+		- persist(StorageLevel.MEMORY_AND_DISK)
+		- persist(StorageLevel.MEMORY_AND_DISK_SERDISK_ONLY)
+	- If you attempt to cache too much data to fit in memory, Spark will automatically evict old partitions using a Least Recently Used (LRU) cache policy.
+	- When you call collect() on an RDD, all data returned by it must fit in RAM on the current node. (In most practical cases, most RDDs cannot be collect()ed because they are too large).
+
+Ch4: Working with Key/Value pairs:
+	- KV RDDs are commnly used to perform aggregations, and often we use some ETL (extract, transform, load) to get our data in K-V format. These RDDs are called Pair-RDDs.
+	- Pair RDDs are still RDDs of Tuple2 in Java/Scala.
+		pairRdd.filter{case (key, val) => value.length < 20 }
+
+	- PairRDDs have a reduceByKey() method that can aggregate data separately per each key.
+		- pairRdd.reduceByKey()
+		- pairRdd.geoupByKey()
+		- pairRdd.mapValues()
+		- 
