@@ -1,0 +1,15 @@
+Machine Learning
+Purpose of machine learning is to discover recurring patterns in the data.
+Sample datasets: https://archive.ics.uci.edu/ml/datasets.php
+
+ML can be split in:
+	- Supervised Learning (develop predictive model based on both input and output data)
+		- Classification (output is a choice between classes/labels: true/false. red/green/blue).
+			The output has discreete values in classification.
+			
+		- Regression (output is a number: stock prices, temperature, etc)
+			The output is continuous in regression.
+
+	- Unsupervised Learning (discover an internal representation from input datra only)
+		- Clustering: no output; find natural groups and patterns from input data only.
+			e.g.: optimal placement of GSM antennas so that all customers receive good service.
