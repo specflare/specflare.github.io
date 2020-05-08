@@ -1,0 +1,202 @@
+/* Examples from W3C */
+CREATE DATABASE dbname;
+
+/* Create table with various constraints */
+
+/*
+CREATE TABLE table_name
+(
+column_name1 data_type(size) constraint_name,
+column_name2 data_type(size) constraint_name,
+column_name3 data_type(size) constraint_name,
+....
+);
+    NOT NULL - Indicates that a column cannot store NULL value
+    UNIQUE - Ensures that each row for a column must have a unique value
+    PRIMARY KEY - A combination of a NOT NULL and UNIQUE. Ensures that a column (or combination of two or more columns) have a unique identity which helps to find a particular record in a table more easily and quickly
+    FOREIGN KEY - Ensure the referential integrity of the data in one table to match values in another table
+    CHECK - Ensures that the value in a column meets a specific condition
+    DEFAULT - Specifies a default value for a column
+*/
+
+CREATE TABLE Persons
+(
+	PersonID int,
+	LastName varchar(255),
+	FirstName varchar(255),
+	Address varchar(255),
+	City varchar(255)
+);
+
+/* SQL Index */
+CREATE INDEX PIndex ON Persons (LastName)
+CREATE UNIQUE INDEX PIndex ON Persons (LastName, FirstName)
+
+DROP TABLE tableName;
+DROP INDEX indexName;
+DROP DATABASE indexName;
+
+ALTER TABLE Persons ALTER COLUMN DateOfBirth year; /* change data type of a column */
+ALTER TABLE Persons ADD COLUMN DateOfBirth year; /* add a new column */
+ALTER TABLE Persons DROP COLUMN DateOfBirth /* delete column in a table */
+
+TRUNCATE TABLE tableName; /* delete all records in a table, but keep the table (empty) */
+
+SELECT * FROM Customers WHERE Country='Germany' AND (City='Berlin' OR City='München') LIMIT 5; /* return first 5 records */
+SELECT * FROM Customers ORDER BY Country ASC, CustomerName DESC;
+SELECT * FROM Customers WHERE City IN ('Paris', 'London');
+SELECT * FROM Products WHERE Price BETWEEN 10 AND 20;
+SELECT * FROM Products WHERE (Price BETWEEN 10 AND 20) AND NOT CategoryID IN (1,2,3); 
+SELECT * FROM Products WHERE ProductName BETWEEN 'C' AND 'M';
+SELECT * FROM Orders WHERE OrderDate BETWEEN #07/04/1996# AND #07/09/1996#;
+
+SELECT CustomerName AS Customer, ContactName AS [Contact Person] FROM Customers; /* example of an ALIAS (temporary assign a name to a column) */
+
+All these examples work with the DB from W3C School: https://www.w3schools.com/sql/
+
+SELECT * FROM Customers WHERE Country IN ('Germany', 'France', 'UK');
+SELECT * FROM Customers WHERE Country NOT IN ('Germany', 'France', 'UK');
+
+SELECT * FROM Customers WHERE Country IN (SELECT Country FROM Suppliers); 
+
+Left Outer Join: Returns all customers, even if they had any order or not.
+SELECT Customers.CustomerName, Orders.OrderID 
+FROM Customers LEFT JOIN Orders
+ON Customers.CustomerID=Orders.CustomerID ORDER BY Customers.CustomerName;
+The difference between INNER JOIN and LEFT OUTER JOIN is that in INNER JOIN only customers that placed orders are displayed. In LEFT OUTER JOIN all customers are displayed, even if they didn't place any orders.
+
+
+Right Outer Join: Returns all Entries from the right table (Employees) even if they didn't place any orders. For those that didn't place any orders, the OrderId column is blank.
+SELECT Orders.OrderID, Employees.LastName, Employees.FirstName FROM Orders RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID ORDER BY Orders.OrderID;
+
+Full outer JOIN: Note: The FULL OUTER JOIN keyword returns all the rows from the left table (Customers), and all the rows from the right table (Orders). If there are rows in "Customers" that do not have matches in "Orders", or if there are rows in "Orders" that do not have matches in "Customers", those rows will be listed as well.
+Practic face un produs cartezian intre elementele celor 2 multimi.
+
+GROUP BY:
+	SELECT COUNT(CustomerID) as NumberOfCustomers, Country FROM Customers GROUP BY Country;
+	SELECT COUNT(CustomerID), Country FROM Customers GROUP BY Country ORDER BY COUNT(CustomerID) DESC;
+	SELECT Shippers.ShipperName,COUNT(Orders.OrderID) AS NumberOfOrders FROM Orders LEFT JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID GROUP BY ShipperName; // print the number of orders that each shipper did.
+	
+HAVING (the WHERE clause cannot be used with aggregate functions):
+	 SELECT COUNT(CustomerID), Country FROM Customers GROUP BY Country HAVING COUNT(CustomerID) > 5;
+	 SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders FROM (Orders INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID) GROUP BY LastName HAVING COUNT(Orders.OrderID) > 10;
+	 
+/*
+
+    INNER JOIN: Returns all rows when there is at least one match in BOTH tables
+    LEFT JOIN: Return all rows from the left table, and the matched rows from the right table
+    RIGHT JOIN: Return all rows from the right table, and the matched rows from the left table
+    FULL JOIN: Return all rows when there is a match in ONE of the tables
+
+*/
+
+/* Inner JOIN  example: returns only when the 2 columns match */
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders INNER JOIN Customers
+ON Orders.CustomerID=Customers.CustomerID;
+
+
+/* Left JOIN or Left outer JOIN */
+/* This query selects all customers from the table, and any orders they may have.
+If a customer has 2 or more orders, it will appear 2 or more times in the resulting table (once for each )*/
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers LEFT JOIN Orders
+ON Customers.CustomerID=Orders.CustomerID ORDER BY Customers.CustomerName;
+
+/* Right outer JOIN: see all orders and the employee that did each */
+SELECT Orders.OrderID, Employees.FirstName
+FROM Orders RIGHT JOIN Employees
+ON Orders.EmployeeID=Employees.EmployeeID ORDER BY Orders.OrderID;
+
+
+/* Table structure is this */
+/*
+Table customers:
+	CustomerID | CustomerName | ContactName | Address | City | PostalCode | Country
+
+Table Categories:
+	CategoryID | CategoryName | Description
+
+Table Employees:
+	EmployeeID | LastName | FirstName | BirthDate | Photo | Notes
+
+Table OrderDetails:
+	OrderDetailID | OrderID | ProductID | Quantity
+
+Table Orders
+	OrderID	CustomerID	EmployeeID	OrderDate	ShipperID
+
+Table Products:
+	ProductID	ProductName	SupplierID	CategoryID	Unit	Price
+	
+Table Shippers:
+	ShipperID	ShipperName	Phone
+
+Table Suppliers
+SupplierID	SupplierName	ContactName	Address	City	PostalCode	Country	Phone
+*/
+
+
+Exercises:
+1. Print the number of products per category:
+
+SELECT CategoryName, CategoryID, COUNT(ProductID) AS NumberOfProducts
+FROM Categories INNER JOIN Products
+ON Categories.CategoryID=Products.CategoryID
+GROUP BY CategoryName;
+
+INSERT INTO Customers (CustomerName, ContactName, Address, City, PostalCode, Country) VALUES ('Cardinal','Tom B. Erichsen','Skagen 21','Stavanger','4006','Norway'); 
+
+/* Insert Data Only in Specified Columns */
+INSERT INTO Customers (CustomerName, City, Country) VALUES ('Cardinal', 'Stavanger', 'Norway'); 
+
+UPDATE Customers SET ContactName='Alfred Schmidt', City='Frankfurt' WHERE CustomerID=1; 
+
+DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste' AND ContactName='Maria Anders';
+
+/* SQL Injection: user enters in textfield UserID = "105 or 1=1" */
+SELECT UserId, Name, Password FROM Users WHERE UserId = 105 or 1=1;
+
+/*
+	GROUP BY clause: for each pair in the GROUP BY clause, print the aggregate function (min, max, avg, sum, etc)
+*/
+
+-- Returns the number of orders per Shipper
+SELECT Shippers.ShipperName, COUNT(Orders.OrderID) AS NumberOfOrders 
+FROM Orders LEFT JOIN Shippers
+ON Orders.ShipperID=Shippers.ShipperID
+GROUP BY ShipperName;
+
+-- Print the number of orders per Shipper
+SELECT Shippers.ShipperName, Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM ((Orders INNER JOIN Shippers
+ON Orders.ShipperID=Shippers.ShipperID)
+INNER JOIN Employees ON Orders.EmployeeID=Employees.EmployeeID)
+GROUP BY ShipperName, LastName;
+
+
+-- Excercises
+-- Count the number of records in a table:
+SELECT COUNT(Customers.CustomerID) AS NumberOfCustomers FROM Customers;
+SELECT COUNT(*) AS NumberOfCustomers FROM Customers;
+
+-- Select all records where we have / we dont have an address specified:
+SELECT LastName,FirstName,Address FROM Persons WHERE Address IS NULL
+SELECT LastName,FirstName,Address FROM Persons WHERE Address IS NOT NULL
+
+-- IN Clause:
+SELECT * FROM Customers WHERE City IN ('Paris','London');
+
+-- Between clause:
+SELECT * FROM Products WHERE Price BETWEEN 10 AND 20;
+SELECT * FROM Products WHERE Price NOT BETWEEN 10 AND 20; 
+
+-- INNER JOIN
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+
+Inner Join:
+Left Join: Returns all entries from the left join and their matches from the right table. if they have multiple matches in the right table, multiple entries are produced for the same left entry. If a left entry has no match on the right, it is returned but populated with NULL for the columns coresponding to the right table.
+Right join: same as left join, but reversed.
+
+Full Outer Join: returns all entries from both tables even if they dont match (carthesian product).

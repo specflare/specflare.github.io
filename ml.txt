@@ -35,6 +35,7 @@ ML can be split in:
 		- Clustering: no output; find natural groups and patterns from input data only.
 			e.g.: optimal placement of GSM antennas so that all customers receive good service.
 	
+	- Reinforcement Learning.
 	
 Method 1: Linear Regression. 
 	Given a set of points int the n-th dimensional space, we try to aproximate them with a line. For new points the aproximation will be this line.
@@ -42,3 +43,6 @@ Method 1: Linear Regression.
 Method 2: k-NN: k-Nearest Neighbor
 	- We find the k-nearest points in the input set (by a metric specified by us, like the Euclidian distance), and we average their responses.
 	- If k=1, we always pick the closest point from the input data as the predictor. In this case, for each point coresponds a region in the space that is aproximated to it. This is a Voronoi Tesselation.
+
+Method 3: Decision Trees.
+	- If the target variable is discreete, the tree is called a classification tree. If the variable is continuous, the tree is called regression tree.
