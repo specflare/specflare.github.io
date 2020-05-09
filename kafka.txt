@@ -1,0 +1,41 @@
+Kafka is a distributed streaming platform. 
+	- It can be used as an Enterprise Messaging System.
+	- It can be used for stream processing.
+	- It provides connectors to/from popular data sources (DBs, other systems, etc).
+
+Kafka Components:
+	- Producers: It is an application that sends data to the Kafka cluster.
+	- Consumers: An application that reads data from Kafka. Consumers must explicitly request Kafka for the data they are interested in. (Registration).
+	- Broker
+	- Kafka cluster: A group of computers, each executing one instance of Kafka Broker. Managed by Zookeeper.
+	- Topic: an arbitrary name given to a Kafka stream, so that producers/consumers can be paired. 
+		Multiple producers can push data to the same Topic. Same producer can push to multiple topics.
+	- Partition: If the data of a Topic is bigger than the storage capacity of a singer Broker (node), Kafka breaks a topic into multiple partitions.
+		Every partition sits on a single node in the cluster. Number of partitions is static and decided by the user.
+		Parallelism at Broker level. i.e. you can split a topic across multiple nodes in separate partitions.
+	- Consumer group: If the data pushed to a single topic is too large for a single consumer, it can be consumed by multiple Consumers (Consumer Group) 
+		listening to the same Topic, in a round robin fashion, so different consumers from the same group, get different data from the same topic.
+		You can have multiple consumers "eat" from the same topic, in a round-robin fashon, basically it offers parallelism at consumer level.
+	- Partitions and Consumer Groups are a tool for scalability. The maximum number of Consumers in a Group is the total number of Partitions that a topic has.
+		This limitation has the purpose to prevend double reading.
+		Kafka will try to distribute partitions evenly to all available brokers (even if the cluster has only 1 broker).
+	
+	- Stream processors
+	- Connectors: they import data from DB to Kafka or inverse.
+	
+Kafka Fault tolerance:
+	* Fault Tolerance: Making the data available even in the presence of a partial failure.
+	* Kafka achieves this by "replication factor", i.e. to how many nodes should a partition be duplicated?
+
+	* Kafla implements fault tolerance by applying replication to the partitions spread across brokers (in the Kafka cluster)
+	* Replication factor (RF): number of copies of a partition spread across the Kafka cluster.
+	* 3 is a reasonable replication factor. can be set to higher for critical data.
+	* RF is specified per topic, not per partition. When applied to a topic, it is applied to all partitions of that topic.
+	* Leader/Follower. only a partition is designed as the Leader that talks to Producer/Consumer. The followers just replicate this info from the leader but don't talk to P/C. 
+	
+Broker configuration
+	* The zookeeper is the connecting link between all brokers spread across multiple PCs, so that they know about each other and form a cluster.
+	
+Netflix OSS:
+- Eureka: service discovery. (similar to Apache ZooKeeper). Keeps an inventory of all the microservices started and information about them (ip address, port, status, etc). When one microservice whant to connect to another, first interrogates the Eureka server about its existence.
+- Hystrix: Circuit breaker. (un fel de siguranta electrica): If the flow is broken (error, timeout), the circuit breaker will open, and no further calls will be made throgh it, and the calls will return immediately with an error.
