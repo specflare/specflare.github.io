@@ -1,7 +1,12 @@
 Spring:
 
-- Primary functions: DI & AOP.
-- Spring was created as an alternative to heavy EJB.
+General knowledge:
+	- The EJB specification is a subset of the Java EE specification
+	- Spring is a replacement for EJB.
+	- The EJB specification intends to provide a standard way to implement the server-side (also called "back-end") 'business' software typically 
+		found in enterprise applications (as opposed to 'front-end' user interface software).
+	- Primary functions: DI & AOP.
+	- Spring was created as an alternative to heavy EJB.
 
 
 Components: Spring Core (IOC, AOP), Spring MVC, Spring WebFlow, Spring Security, Spring Cloud (Wraps Netflix OSS)
@@ -31,12 +36,15 @@ Ch1: constructor injection, setter injection. (DI facilitates loose coupling). w
 	- Spring Core container (used by all other spring modules)
 	
 Ch2: Beans Wiring
-	- Spring configurations can be mixed for the same project (XMLConfig, JavaConfig, AutoConfig). Automatic configuration is recommended. JavaConfig is recommended if we don't maintain the source code. XML is the least recommended one.
+	- Spring configurations can be mixed for the same project (XMLConfig, JavaConfig, AutoConfig). Automatic configuration is recommended. 
+		JavaConfig is recommended if we don't maintain the source code. XML is the least recommended one.
 	- Automatic wiring: beans are marked with @Component.
 		- Automatic component scanning is not enabled by default. Enable it with @Configuration, @ComponentScan on the Spring config class.
 		- Spring supports @Named annotation as an alternative to @Component.
-		- @ComponentScan with no argument scans automatically in its package. Setting a different base package: @Configuration, @ComponentScan(basePackages="soundsystem"). Also works with classes @ComponentScan(basePackageClasses={CDPlayer.class, DVDPlayer.class})
-		- Setters or constructors are marked with @Autowired. Spring will try to auto-resolve them. If it fails, Spring will throw an exception. Properties cand be marked @Autowired(required=false), so that Spring doesnt throw.
+		- @ComponentScan with no argument scans automatically in its package. Setting a different base package: 
+			@Configuration, @ComponentScan(basePackages="soundsystem"). Also works with classes @ComponentScan(basePackageClasses={CDPlayer.class, DVDPlayer.class})
+		- Setters or constructors are marked with @Autowired. Spring will try to auto-resolve them. If it fails, Spring will throw an exception. 
+			Properties cand be marked @Autowired(required=false), so that Spring doesnt throw.
 		- Java DI Specifications uses @Inject (equivalent to @Autowired), and @Named (eq. to @Component)
 	
 	- JavaConfig wiring (used for instance when you want to wire beans from external library whose source you don't maintain)
@@ -71,22 +79,25 @@ Ch2: Beans Wiring
 		- best approach is to have a root configuration (either JavaConfig or XML) that imports all other configurations.
 		
 	Tags: @Component (or @Named), @Configuration, @ComponentScan, @Bean, @Autowired (or @Inject), @Import, @ImportResource
-		@Qualifier: used in order to remove injection confusion (Qualifier allows you to associate a name for a bean, and at injection point specify the name as well, when multiple beans can be injected).
+		@Qualifier: used in order to remove injection confusion (Qualifier allows you to associate a name for a bean, 
+			and at injection point specify the name as well, when multiple beans can be injected).
 	
 Ch4: Aspect-Oriented Programming (AOP)
 	- In software development, functions that span multiple points of an application are called cross-cutting concerns.
 	- Aspects terminology: Advice (the job of an aspect), Pointcut
 		- Advices: Before, After, After-returning, after-throwing, Around.
-		- "Join point" is a point in the execution of the application where an aspect can be plugged in. This point could be a method being called, an exception being thrown, or even a field being modified.
+		- "Join point" is a point in the execution of the application where an aspect can be plugged in. 
+			This point could be a method being called, an exception being thrown, or even a field being modified.
 		- Pointcuts: the "where" of an aspect: The pointcut defines where (at what join points) that advice is applied.
 		- An aspect is the merger of advice and pointcuts.
-	- Spring aspects are implemented as proxies that wrap the target object. The proxy handles method calls, performs additional aspect logic, and then invokes the target method. (Spring AOP implementation only works on method join points).
+	- Spring aspects are implemented as proxies that wrap the target object. The proxy handles method calls, performs additional aspect logic, 
+		and then invokes the target method. (Spring AOP implementation only works on method join points).
 	- Spring uses AspectJ notation for defining aspects/pointcuts.
 	- An aspect (a class annotated with @Aspect) can also be a bean.
 	- AOP is not enabled by default. It can be enabled in JavaConfig with @EnableAspectJAutoProxy (near @ComponentScan), or with <aop:aspectj-autoproxy> in XMLConfig.
-	- Even if Spring uses AspectJ annotations for AOP, it is limited to Proxy-based AOP (only for methods)
-	- @Around advice: combines both @Before and @After advices (in the handler method you ne
-	ed to call jp.proceed() to execute the wrapped method, then do your "@After" advice)
+	- Even if Spring uses AspectJ annotations for AOP, it is limited to Proxy-based AOP (only for methods).
+	- @Around advice: combines both @Before and @After advices (in the handler method you need to call jp.proceed() to execute the wrapped method, 
+		then do your "@After" advice)
 	
 	Annotations: @Aspect; @Pointcut: define the pointcut inside an aspect. Further pointcuts can refer this one (to prevent code duplication)
 		marking pointcuts: @Before, @After, @Around, @AfterReturning, @AfterThrowing.
@@ -127,6 +138,7 @@ Ch9: Spring Security: Introducing Spring Security / Securing web applications us
 	- Spring Security can also secure method invocations using Spring AOP, proxying objects and applying advice to ensure that the user has the proper authority to invoke secured methods.
 	- Can be enabled with @EnableWebSecurity, along with @Configuration, for the class extending WebSecurityConfigurerAdapter.
 	- Spring Security can connect to user stores like LDAP, in-memory, to grab users and their permissions.
+	- Defines Roles & Authorities. Each Role has one or more Authorities. same authority can be assigned to multiple Roles.
 	
 Ch10: Hitting the database with Spring and JDBC. (Spring Data)
 	- JDBC throws SQLException for all kinds of DB problems (connectivity, query syntax error, schema errors, etc). Hard to debug. Hibernate offers a lot of exceptions (for any error), but they are specific to Hibernate (they should not be treated by user code)

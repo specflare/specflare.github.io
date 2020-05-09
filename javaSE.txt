@@ -1,9 +1,3 @@
-General knowledge:
-	- The EJB specification is a subset of the Java EE specification
-	- Spring is a replacement for EJB.
-	- The EJB specification intends to provide a standard way to implement the server-side (also called "back-end") 'business' software typically found in enterprise applications (as opposed to 'front-end' user interface software).
-	
-
 Integer types:
 	- all of them are signed (unsigned types do not exist, except char (16 bits) type)
 	- decimal, binary, and hex are possible: 0x1f, 0b1010101, 43433434; binary literals can be split in groups by four by underscore: 0b1101_0010_1111
@@ -26,8 +20,10 @@ Exceptions:
 	- the only way the code in finally is not executed is to System.exit();
 	- try with cleanup: try (InputStream is = new FileInputStream("gig.txt")) {} // no need for finally, the compiler cleans automatically
 	Sample exceptions: AssertionError (from assert(), if assertions are enabled)
-		Checked: Derive from Exception (Throwable). Are thrown by the user. (IOException, FileNotFoundException, etc)Must be specified in the throws clause in the method signature. Application can recover from them (not necessarily quit)
-		Unchecked: Derive from "Error" or "RuntimeException". Examples: NullPointerException, AssertionError, OutOfMemoryError, etc (they cannot be predicted). Recovery from them is usually impossible, so the program quits.
+		* Checked: Derive from Exception (Throwable). Are thrown by the user. (IOException, FileNotFoundException, etc). 
+			Must be specified in the throws clause in the method signature. Application can recover from them (not necessarily quit).
+		* Unchecked: Derive from "Error" or "RuntimeException". Examples: NullPointerException, AssertionError, OutOfMemoryError, etc 
+			(they cannot be predicted). Recovery from them is usually impossible, so the program quits.
 
 Assertions: by default they are disabled.
 	to enable, run with: java -ea MyProgram (only in user classes). java -esa MyProgram (enable in system classes).
@@ -38,11 +34,17 @@ instanceof always evaluates to false if its left-hand operand is null.
 assert : like in C, only that it throws exception AssertionError.
 
 Methods specifier:
-	- abstract: declares the method as abstract (must be overridden). Containing class must also be declared abstract. It has no body (like a pure virtual method in C++). Any class with one or more abstract methods must be declared abstract
-	- final : a final method cannot be overridden (usefull for optimizations)
-	- native: implementation is done in another language (like C). It contains no implementation (like abstract). native methods are used to interface Java code to existing libraries written in C or C++
-	- strictfp: make JVM perform floating point operations in strict mode, i.e. either 32 or 64 bits. (Does not take any advantage of the FP HW available on the platform) (Using strictfp guarantees that results of floating-point calculations are identical on all platforms)
-	- synchronized: (can be either static or normal methods also). The synchronized modifier makes a method threadsafe. Before a thread can invoke a synchronized method, it must obtain a lock on the method’s class (for static methods) or on the relevant instance of the class (for non-static methods). This prevents two threads from executing the method at the same time.
+	- abstract: declares the method as abstract (must be overridden). Containing class must also be declared abstract. 
+		It has no body (like a pure virtual method in C++). Any class with one or more abstract methods must be declared abstract.
+	- final : a final method cannot be overridden (usefull for optimizations).
+	- native: implementation is done in another language (like C). It contains no implementation (like abstract). 
+		native methods are used to interface Java code to existing libraries written in C or C++.
+	- strictfp: make JVM perform floating point operations in strict mode, i.e. either 32 or 64 bits. 
+		Does not take any advantage of the FP HW available on the platform.
+		Using strictfp guarantees that results of floating-point calculations are identical on all platforms.
+	- synchronized: (can be either static or normal methods also). The synchronized modifier makes a method threadsafe. 
+		Before a thread can invoke a synchronized method, it must obtain a lock on the method’s class (for static methods) or on the relevant 
+		instance of the class (for non-static methods). This prevents two threads from executing the method at the same time.
 	
 	Varargs methods:
 	(1) public int Max1(int first, int... rest) is similar to: (2) public int Max2(int first, int[] rest)
@@ -99,7 +101,8 @@ Importing static members from a class:
 If a Java file contains a public class, the name of the file must be the same as the name of the class.
 A .java source file may have more than one classes defined in them, but at least one class must have the same name as the source filename.
 
-In order to tell the java interpreter to look for .class files in other directories apart from the current directory, tell him this by using the -classpath option (or -cp), or the CLASSPATH environment variable.
+In order to tell the java interpreter to look for .class files in other directories apart from the current directory, 
+	tell him this by using the -classpath option (or -cp), or the CLASSPATH environment variable.
 
 Execute jar archives (containing a main class, and all the required classes to run)
 java -jar Program.jar
@@ -107,19 +110,23 @@ java -jar Program.jar
 Classes and interfaces
 	- a final class cannot be extended.
 	- a strictfp class is as if declaring all of its methods strictfp.
-	- starting with Java 8, interfaces are allowed to define default methods (methods with implementation), that classes implementing the interface are not forced to override the default methods.
-	- transient modifier: This modifier specifies that a field is not part of the persistent state of an object and that it need not be serialized along with the rest of the object.
-	- volatile modifier: a volatile modifier may not be cached by the compiler in a register, because it is used by multiple threads. (no optimizations on it)
+	- starting with Java 8, interfaces are allowed to define default methods (methods with implementation), that classes implementing the interface 
+		are not forced to override the default methods.
+	- transient modifier: This modifier specifies that a field is not part of the persistent state of an object and that it need not be serialized 
+		along with the rest of the object.
+	- volatile modifier: a volatile modifier may not be cached by the compiler in a register, because it is used by multiple threads. (no optimizations on it).
 	- every class contains at least one constructor - the default ctor automatically generated by the compiler. that performs no initialization and takes no parameters
-	- class fields (both static and non static) are automatically initialized by the compiler to the default values. Stack variables are not (compile error, used without initialization).
+	- class fields (both static and non static) are automatically initialized by the compiler to the default values. 
+		Stack variables are not (compile error, used without initialization).
 
 	- static initializer: a bloc of code in a class that declares static fields. it is called before any constructor, and its purpose is to initialize complex static data members of that class.
-	- instance initializers: Instance initializers can initialize arrays or other fields that require complex initialization. They are sometimes useful because they locate the initialization code right next to the field, instead of separating into a constructor (rarely used).
+	- instance initializers: Instance initializers can initialize arrays or other fields that require complex initialization. They are sometimes useful 
+		because they locate the initialization code right next to the field, instead of separating into a constructor (rarely used).
 	- calling other ctor from the same class: this(x, y) - must be first statement in a ctor
 	- calling ctor of superclass: super(x, y); - must be first statement in our ctor.
 	- if we declare one ctor for a class, the default one will NOT be generated anymore.
 	- declaring a private ctor makes a class unable to be instantiated (like java.lang.Math, or java.lang.System).
-	- covarian return types are also supported in Java, just like in C++.
+	- covariant return types are also supported in Java, just like in C++.
 	- invoking an overridden method from our class: super.func1(). Casting this to the superclass DOES NOT WORK.
 	- protected access specifier for fields/methods: field is accessible to all classes in the same packages, plus to all subclasses.
 	- package access specifier (the default one): field is only accessible to classes in the same package (more restrictive than the protected acc specifier)
@@ -127,7 +134,7 @@ Classes and interfaces
 	Java interfaces:
 		- Cloneable: adds: clone() method
 		- Comparable<T>: adds compareTo(T o) method
-		- Serializable: after implementing this interface, objects can be transferred over sockets and stuff.
+		- Serializable: after implementing this interface, objects can be transferred over sockets and stuff. It is a marker interface.
 
 - A cast in Java that does not succeed throws ClassCastException;
 - In addition to converting an array to an object, an array can be converted to another type of array if the “base types” of the two arrays are reference types that can themselves be converted.
@@ -194,11 +201,7 @@ Java Collections:
 	
 	- Interfaces: 
 		java.util.Collection is the root interface of all collections framework. It contains methods like add(), remove(), clear()
-		java.util.List, java.util.
-		Collection : interface
-			List
-			Set
-			Map
+		java.util.List, Set, Map.
 		
 Strings:
 	legal Java: System.out.println("Dog".length());
@@ -209,13 +212,17 @@ Ch6: Java’s Approach to Memory and Concurrency
 	- GC works by STW ( stop the world), i.e. it collects the garbage while all application threads paused.
 	- (WGH) weak generational hypothesis: Java objects have a small number of possible life expectancies (generations)
 	- Evacuating GC: alive objects are moved to a different area of the heap (having in mind that most objects are dead), and the dead objects space is reallocated.
-	- If the object has a finalize() method, it will be called before the object is GCed. The finalize() method can ressurect the object (be putting the this reference somewhere outside.). In this case the object will not be GCed anymore. The finalize() method is called only once, even if the object is resurrected.
-	- The finalize() mechanism is broken by design. The platform can make no guarantees about when (or even whether) a finalizer will be invoked or in what order finalizers will be invoked. TO BE AVOIDED.
+	- If the object has a finalize() method, it will be called before the object is GCed. The finalize() method can ressurect the object 
+		(by putting the 'this' reference somewhere outside.). In this case the object will not be GCed anymore. 
+		The finalize() method is called only once, even if the object is resurrected.
+	- The finalize() mechanism is broken by design. The platform can make no guarantees about when (or even whether) a finalizer will be invoked 
+		or in what order finalizers will be invoked. TO BE AVOIDED.
 	- To ensure that certain actions are taken before the VM exits, Java provides Runtime::addShutdownHook().
 	Threading:
 		- Thread t = new Thread(() -> {System.out.println("Hello Thread");}); t.start(); // the lambda maps to the Runnable interface.
 		- Threads lifecycle: Thread.State { NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED }
-		- Object.wait(), notify(), notifyAll(). Thread.run(), start(). wait() and notify() must be used inside a synchronized method or block, because of the temporary relinquishing of locks that is required for them to work. properly.
+		- Object.wait(), notify(), notifyAll(). Thread.run(), start(). wait() and notify() must be used inside a synchronized method or block, 
+			because of the temporary relinquishing of locks that is required for them to work. properly.
 	
 Ch8: Working with the Java Collections
 	- Interfaces: Map, SortedMap, Collection, List, Set, SortedSet
@@ -236,16 +243,16 @@ Ch8: Working with the Java Collections
 			- class HashSet<E> implements Set<E>
 			- class TreeSet<E> implements SortedSet<E> (who in turn implements Set<T>)
 
-		- interface Map<K, V> (does not extend the Collection interface). Methods: put(K, V), get(K), remove(K)
-			An important aspect of Map is that it can be viewed as a "collective view". Its Keys as a Set, Its values as a Collection. And its <K,V> pairs as a Set of Map.Entry
+		- interface Map<K, V> (does not extend the Collection interface). Methods: put(K, V), get(K), remove(K). An important aspect of Map is that it 
+			can be viewed as a "collective view". Its Keys as a Set, Its values as a Collection. And its <K,V> pairs as a Set of Map.Entry
 				- class TreeMap
 				- class HashMap
-				- class 
 		
-		- Queue<E> extends Collection<E>
-	java.util.Collections static class contains static utility classes that work on collections (sort, search, etc)
+		- Queue<E> extends Collection<E>, Stack<E> extends Vector.
+	java.util.Collections static class contains static utility classes that work on collections (sort, search, etc).
 	
-	- Except for the legacy classes Vector and Hashtable, the collection implementations in java.util do not have synchronized methods and are not protected against concurrent access by multiple threads.
+	- Except for the legacy classes Vector and Hashtable, the collection implementations in java.util do not have synchronized methods and 
+		are not protected against concurrent access by multiple threads.
 		- Synchronized collection can be achived with wrapper classes:
 			List<String> list = Collections.synchronizedList(new ArrayList<String>()); 
 			Set<Integer> set = Collections.synchronizedSet(new HashSet<Integer>());
@@ -253,7 +260,10 @@ Ch8: Working with the Java Collections
 		- Read only wrappers for collections (usefull when you want to pass them to a method as read-only), if modified throws OperationNotSupportedException:
 			List<Integer> primes = new ArrayList<Integer>(); List<Integer> readonly = Collections.unmodifiableList(primes);
 			
-		- CopyOnWrite-like collections (CopyOnWriteArrayList, CopyOnWriteTreeSet, etc): used when the read operations are prevalent (over the write operations). Any time the user does a write operation, the entire collection is copied, and the iterator works on the newly copied collection. When there are no longer any iterators on the old collection, it is deleted.
+		- CopyOnWrite-like collections (CopyOnWriteArrayList, CopyOnWriteTreeSet, etc): used when the read operations are prevalent (over the write operations). 
+			COW collections use an interesting technique to make it thread-safe without a need for synchronization.
+			Any time the user does a write operation, the entire collection is copied, and the iterator works on the newly copied collection. 
+			When there are no longer any iterators on the old collection, it is deleted.
 		
 	- Other usefull static methods: Collections.copy(list1, list2);
 		Collections.fill(list, o); // Fill list with Object o
@@ -307,9 +317,7 @@ Ch11: Classloading, Reflection and Method Handles.
 	- Class<?> jdbcClz = Class.forName("oracle.jdbc.driver.OracleDriver"); loads a class by name from the classpath.
 	- Instances can be constructed reflexively (by using Class::newInstance() or another constructor).
 	- Methods can be invoked reflectively with Method.invoke().
-	
-	
-	
+
 
 Sample interfaces in Java: Collection, Map, Set, List
 Sample abstract classes: InputStream, OutputStream
@@ -317,8 +325,3 @@ final classes: java.nio.file.Files;
 Sample static classes: Math, Collections, Arrays
 Sample exceptions: 	Unchecked: NullPointerException, AssertionError, OutOfMemoryError (RuntimeError). 
 					Checked: IOException, FileNotFoundException
-
-Important things to reconsider:
-	- Java Collections & Streams
-	- Generics
-	- NIO.2 API
