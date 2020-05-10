@@ -325,3 +325,12 @@ final classes: java.nio.file.Files;
 Sample static classes: Math, Collections, Arrays
 Sample exceptions: 	Unchecked: NullPointerException, AssertionError, OutOfMemoryError (RuntimeError). 
 					Checked: IOException, FileNotFoundException
+					
+Important topics:
+	WeakHashMap: Is a hashtable-based implementation of the Map interface, with keys that are of a WeakReference type.
+		Understand difference between Strong/Soft/Weak references in Java. 
+			- SoftRefecence class creates soft references to an object. the Object is cleaned only iff the GC needs memory, even if SoftReference points to it.
+			- WeakReference creates weak rerecences. GC cleans memory anyway, even if WeakReferences point to it.
+			- References of a WeakReference type are used as keys in WeakHashMap
+			
+	ConcurrentMap/ConcurrentHashMap: 

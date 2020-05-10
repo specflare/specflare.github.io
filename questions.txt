@@ -1,0 +1,5 @@
+Questions:
+	* Explain me your tech stack? tools used? IDEs? On-Prem/Cloud? Do you have a dedicated DevOps team? Who does the deployment?
+	* How is the team organized? Who decides what work/direction we do/follow? Is there a roadmap/backlog for the Architecture team?
+	* What will my tasks be during the first 1,3,6 months? How is the ramp-up period for Engineers and Architects?
+	* What do you think would be the biggest challenge for this position? Is it the technical part? Is it the communication/persuading part?

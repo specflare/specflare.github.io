@@ -1,0 +1,22 @@
+Common AWS Services:
+	* AWS CloudFormation: provides a common language for you to model and provision AWS and third party application resources in your cloud environment. 
+		AWS CloudFormation allows you to use programming languages or a simple text file to model and provision, in an automated and secure manner, 
+		all the resources needed for your applications across all regions and accounts. Basically it offers IaaS.
+		
+	* EC2 (Elastic Compute Cloud): Virtual machines inside AWS.
+	* S3: Simple Storage Services: simple storage services of objects, by key. Most basic storage.
+	* Aurora: Optimized MySQL/PostgreSQL, that runs 
+	* DynamoDB: A NoSQL database from AWS, similar to MongoDB.
+	* RDS (Relational Database Service) manages the other DB services.
+	* AWS Route 53 (reference to TCP/UDP port 53 for DNS): AWS Service to purchase domain names.
+	* AWS CloudFront: CDN network from AWS.
+	* AWS VPC (Virtual Private Cloud): lets you provision a logically isolated section of the AWS Cloud where you can launch AWS resources in a virtual network 
+		that you define. You have complete control over your virtual networking environment, including selection of your own IP address range, 
+		creation of subnets, and configuration of route tables and network gateways. You can use both IPv4 and IPv6 in your VPC for secure and easy access 
+		to resources and applications.
+	* AWS Lambda is an event-driven, serverless computing platform.
+	* AWS SecurityGroups: Are like a FW Policy that only contain Proto/Port/Source. 
+		Destination is always the device on which the SecGroup is applied. Action is always ALLOW. A SG can be applied to multiple instances.
+	* AWS CloudWatch: monitoring for your cloud resources.
+	* AWS IAM: Identity and Access Management for users & groups with permissions to allow/deny them access to AWS resources. It is like LDAP on-prem.
+	* Amazon ElastiCache for Redis: In memory data-base.
