@@ -29,6 +29,12 @@ OAuth2.0 / OpenID Connect (https://oauthdebugger.com/)
 			OID connect is just a 5% thin layer on top of OAuth2.0 protocol.
 			- the ID token returned by OIDC is called JWT (json web token). This jwt can be decoded to plaintext json using an online tool.
 
+C4 Architecture Model with StarUML
+	- System Context (Level 1): shows how the software system fits into the world around it.
+	- Container (Level 2): Shows the high-level building blocks of the whole Software System (all microservices).
+	- Component (Level 3): zooms into a single container, and presents the components inside it.
+	- Code (Level 4): Presents the Code (UML/classes) inside a Component. Not necessarily all the classes, but at least the most important ones.
+
 
 Questions for them:
 	* Explain me your tech stack? tools used? IDEs? On-Prem/Cloud? Do you have a dedicated DevOps team? Who does the deployment?
