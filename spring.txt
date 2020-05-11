@@ -105,25 +105,32 @@ Ch4: Aspect-Oriented Programming (AOP)
 Ch5: Building Spring Web Applications (Spring MVC)
 	MVC: Servlet is the Controller, JSP is the View.
 	- Like most MVC frameworks, Spring MVC funnels requests through a single front controller servlet (DispatcherServlet).
-	- A MVC may have multiple Controllers, so the DispatcherServlet needs to know whick controller to use, so it consults the HandlerMapper (decision is based on the Request URL).
-	- The logic performed by a controller often results in some information that needs to be carried back to the user and displayed in the browser. This information is referred to as the Model (Model is the business-logic part).
+	- A MVC may have multiple Controllers, so the DispatcherServlet needs to know whick controller to use, so it consults the 
+		HandlerMapper (decision is based on the Request URL).
+	- The logic performed by a controller often results in some information that needs to be carried back to the user and displayed in the browser. 
+		This information is referred to as the Model (Model is the business-logic part).
 	
 	Controller: Selects the Model and the View (based on the Request params)
 	Model: business logic (it takes the information from the Request and produces new information)
 	View: It takes the information produced by the Model and presents it in HTML (JSP).
 	DispatcherServlet -> Handler Mapping -> Controller -> Model and logical View name -> View Resolver -> View.
-	- Any class that extends AbstractAnnotationConfigDispatcherServletInitializer will automatically be used to configure DispatcherServlet and the Spring application context in the application’s servlet context.
-	- In Spring MVC, controllers are just classes (annotated with @Controller) with methods that are annotated with @RequestMapping to declare the kind of requests they’ll handle.
+	- Any class that extends AbstractAnnotationConfigDispatcherServletInitializer will automatically be used to configure 
+		DispatcherServlet and the Spring application context in the application’s servlet context.
+	- In Spring MVC, controllers are just classes (annotated with @Controller) with methods that are annotated with @RequestMapping to declare 
+		the kind of requests they’ll handle.
 	- The method annotated with RequestMapping just returns the name of the view that renders the view.
 	
 	Annotations: @Controller (alias for @Component), @RequestMapping("/url"), @RequestParam, @RestController
 	
 Ch6: Rendering web views.
-	- View Resolving (map view name returned by controller to an actual jsp): InternalResourceViewResolver. It was configured to apply a prefix of /WEB-INF/views/ and a suffix of .jsp to a view name.
+	- View Resolving (map view name returned by controller to an actual jsp): InternalResourceViewResolver. It was configured to apply a 
+		prefix of /WEB-INF/views/ and a suffix of .jsp to a view name.
 	- public interface ViewResolver { View resolveViewName(String viewName, Locale locale) throws Exception; }
 	- public interface View { String getContentType(); void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception; }
-	Spring provides several implementations for these interfaces, like: InternalResourceViewResolver (for JSP), ResourceBundleViewResolver, TilesViewResolver (Apache Tiles views), etc.
-	- Thymeleaf is a compelling alternative to JSP that offers a view resolver for working with Thymeleaf’s natural templates: templates that have more in common with the HTML they produce than with the Java code that drives them, but JSP is still the dominant View technology for Java.
+	- Spring provides several implementations for these interfaces, like: InternalResourceViewResolver (for JSP), ResourceBundleViewResolver, 
+		TilesViewResolver (Apache Tiles views), etc.
+	- Thymeleaf is a compelling alternative to JSP that offers a view resolver for working with Thymeleaf’s natural templates: templates that have 
+		more in common with the HTML they produce than with the Java code that drives them, but JSP is still the dominant View technology for Java.
 	- JSP is a specification that’s tightly coupled to the servlet specification. This means it can only be used for web views in a servlet-based web application.
 	
 Ch7: Spring Web Flow: Spring Web Flow is an extension to Spring MVC that enables development of flowbased web applications.
@@ -133,7 +140,7 @@ Ch7: Spring Web Flow: Spring Web Flow is an extension to Spring MVC that enables
 	
 Ch9: Spring Security: Introducing Spring Security / Securing web applications using servlet filters / Authentication against databases and LDAP
 	- Spring Security, a security framework implemented with Spring AOP and servlet filters.
-	- Spring Security provides a comprehensive security solution, handling authentication and authorization at both the web request level and at the method invocation level.
+	- Spring Security provides a comprehensive security solution, handling authentication and authorization at both the web request method invocation level.
 	- To secure web requests and restrict access at the URL level, Spring Security uses servlet filters.
 	- Spring Security can also secure method invocations using Spring AOP, proxying objects and applying advice to ensure that the user has the proper authority to invoke secured methods.
 	- Can be enabled with @EnableWebSecurity, along with @Configuration, for the class extending WebSecurityConfigurerAdapter.
@@ -141,27 +148,57 @@ Ch9: Spring Security: Introducing Spring Security / Securing web applications us
 	- Defines Roles & Authorities. Each Role has one or more Authorities. same authority can be assigned to multiple Roles.
 	
 Ch10: Hitting the database with Spring and JDBC. (Spring Data)
-	- JDBC throws SQLException for all kinds of DB problems (connectivity, query syntax error, schema errors, etc). Hard to debug. Hibernate offers a lot of exceptions (for any error), but they are specific to Hibernate (they should not be treated by user code)
-	- All Spring Data exceptions are rooted with DataAccessException (unchecked). Instead of forcing developers to write catch blocks (which are often left empty), Spring promotes the use of unchecked exceptions.
+	- JDBC throws SQLException for all kinds of DB problems (connectivity, query syntax error, schema errors, etc). Hard to debug. 
+		Hibernate offers a lot of exceptions (for any error), but they are specific to Hibernate (they should not be treated by user code).
+	- All Spring Data exceptions are rooted with DataAccessException (unchecked). Instead of forcing developers to write catch blocks 
+		(which are often left empty), Spring promotes the use of unchecked exceptions.
 	- To take advantage of Spring’s data-access exceptions, you must use one of Spring’s supported data-access templates.
-	- Spring Data access templates: Spring separates the fixed and variable parts of the data-access process into two distinct classes: templates and callbacks. Templates manage the fixed part of the process, whereas your custom data-access code is handled in callbacks.
+	- Spring Data access templates: Spring separates the fixed and variable parts of the data-access process into two distinct classes: 
+		templates and callbacks. Templates manage the fixed part of the process, whereas your custom data-access code is handled in callbacks.
 	- Spring comes with several templates to choose from, depending on your persistence platform choice. JdbcTemplate, HibernateTemplate or JpaTemplate
 	- Spring can use a JDBC driver-based data source, configured either in XML or in JavaConfig.
-	- Spring JDBC templates (eliminates the boilerplate JDBC code: connection, resource free-up, etc): JdbcTemplate, NamedParameterJdbcTemplate, SimpleJdbcTemplate. Every JDBC template from spring needs a DataSource to function, that can be injected by means of spring.
+	- Spring JDBC templates (eliminates the boilerplate JDBC code: connection, resource free-up, etc): JdbcTemplate, NamedParameterJdbcTemplate, 
+		SimpleJdbcTemplate. Every JDBC template from spring needs a DataSource to function, that can be injected by means of spring.
 	
 Ch11: Learning Spring data access philosophy
-	- Lazy loading: as object graphs become more complex, you sometimes don’t want to fetch entire relationships immediately. Lazy loading allows you to grab data only as it’s needed.
+	- Lazy loading: as object graphs become more complex, you sometimes don’t want to fetch entire relationships immediately. 
+		Lazy loading allows you to grab data only as it’s needed.
 	- Eager fetching: this is the opposite of lazy loading. Eager fetching allows you to grab an entire object graph in one query.
-	- Cascading: sometimes changes to a database table should result in changes to other tables as well. Going back to the purchase order example, when an Order object is deleted, you also want to delete the associated LineItems. from the database.
-	- Hibernate: The Session interface provides basic data-access functionality such as the ability to save, update, delete, and load objects from the database. (created from SessionFactory)
+	- Cascading: sometimes changes to a database table should result in changes to other tables as well. Going back to the purchase order example, 
+		when an Order object is deleted, you also want to delete the associated LineItems. from the database.
+	- Hibernate: The Session interface provides basic data-access functionality such as the ability to save, update, delete, and load objects 
+		from the database. (created from SessionFactory).
 	- Hibernate: defining your object-to-database mapping in XML or using annotations is possible (based on Hibernate version).
 	
 Ch21: Simplifying development with Spring Boot.
-	- Spring Boot starters—Spring Boot starters aggregate common groupings of dependencies into single dependencies that can be added to a project’s Maven or Gradle build. (spring starter dependencies are always compatible with each other).
-	- Spring Boot Actuator: it adds several urls to SpringBoot applications to allow the user to get more insight on the app. ( /autoconfig, /beans )
+	- Spring Boot starters—Spring Boot starters aggregate common groupings of dependencies into single dependencies that can be added 
+		to a project’s Maven or Gradle build. (spring starter dependencies are always compatible with each other).
+	- Spring Boot Actuator: it adds several urls to SpringBoot applications to allow the user to get more insight on the app. ( /autoconfig, /beans).
 	
 	
 Spring Profiles: @Profile annotation.
-	Allows you to map each bean from a spring container to a specific profile, like dev, debug, production, testing etc. When we deploy the application in production, only beans with production profile will be initialized, and the rest discarded.
+	Allows you to map each bean from a spring container to a specific profile, like dev, debug, production, testing etc. 
+		When we deploy the application in production, only beans with production profile will be initialized, and the rest discarded.
 	- Any bean that does not specify any profile is by default assigned to the default profile.
 	- in tests, the active profile can be changed with @ActiveProfile.
+	
+Summary:
+	Beans can be defined with the following stereotype annotations: @Component, @Controller, @Service, @Repository.
+		List of beans in SpringBoot can be optained throuigh the actuator, at http://<IP>/beans.
+	Bean scope: Can be defined with the @Scope annotation. By default they are singleton. All scopes: 
+		singleton: Scopes a single bean definition to a single object instance per Spring IoC container.
+		prototype: Scopes a single bean definition to any number of object instances. (Any injected instance is different).
+		request: Scopes a single bean definition to the lifecycle of a single HTTP request; that is, each HTTP request has its own instance of a bean created 
+			off the back of a single bean definition. Only valid in the context of a web-aware Spring ApplicationContext.
+		session: Scopes a single bean definition to the lifecycle of an HTTP Session. Only valid in the context of a web-aware Spring ApplicationContext.
+		global-session: Scopes a single bean definition to the lifecycle of a global HTTP Session. Typically only valid when used in a portlet context. 
+			Only valid in the context of a web-aware Spring ApplicationContext.
+	@Configuration: marks a class as JavaConfig class.
+	@Bean: a method inside a @Configuration class that returns a bean (constructs a bean)
+	@Autowired: automatic injection of beans marked with either @Component, @Service, @Repository, @Controller.
+	@EnableWebSecurity: is used along with @Configuration annotation to enable Spring Security.
+	@SpringBootApplication, @EnableAutoConfiguration
+	@Transactional: Spring declarative transaction management implemented using AOP. Basically creates a proxy method/class around the user 
+		method/class marked with @Transactional, and before the method it starts a transaction (with TransactionInterceptor from Spring), and after the user
+		method returns, it commits/rolls-back the transaction, based on result. 
+	

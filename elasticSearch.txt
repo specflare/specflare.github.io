@@ -11,7 +11,7 @@ Cluster:
 	
 Node:
 	- identified by a name (a marvel character by default)
-	- starging a single node will create a cluster named elasticsearch.
+	- starting a single node will create a cluster named elasticsearch.
 
 Index:
 	- a collection of documents (or types).
@@ -65,3 +65,7 @@ Typef of queries:
 		- used to compound many queries in a logical fashion.
 		
 	- Full text queries: looking for a term in a text. (inverted index, etc)
+	
+Inverted index:
+	- Record level inverted index: keeps the list of records where a word appears.
+	- Word level inverted index: keeps the word position inside a record, for each occurence.
