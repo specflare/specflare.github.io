@@ -1,3 +1,5 @@
+Latest known version: Kafka 2.6
+
 Kafka is a distributed streaming platform. 
 	- It can be used as an Enterprise Messaging System.
 	- It can be used for stream processing.
@@ -39,3 +41,145 @@ Broker configuration
 Netflix OSS:
 - Eureka: service discovery. (similar to Apache ZooKeeper). Keeps an inventory of all the microservices started and information about them (ip address, port, status, etc). When one microservice whant to connect to another, first interrogates the Eureka server about its existence.
 - Hystrix: Circuit breaker. (un fel de siguranta electrica): If the flow is broken (error, timeout), the circuit breaker will open, and no further calls will be made throgh it, and the calls will return immediately with an error.
+
+### Kafka: The Definitive Guide ###
+Chapter 1: Meet Kafka
+	- Topics are split into partitions.
+	- Each message has a key. Kafka guarantees affinity between messages with the same key and partitions.
+	- Producers and send data with ack=0, ack=1 or ack=all (wait for ack from 0 brokers, 1 leader broker, of all brokers).
+	- Since messages are split between partitions of a topic, the topic does not guarantee any time ordering of the messages.
+	- Each partition can be stored on a different server, scaling horizontally.
+	- A stream of data is considered to be a single topic of data, regardless of the number of partitions.
+	- A producer can use a different partitioner (maps messages to partitions), that follows other business rules.
+	- Each message in a given partition has a unique offset. By storing the offset of the last consumed message for each partition, a consumer can restart without loosing its place.
+	- The number of consumers in a CG may be equal or less to the number of partitions. This mapping is called consumer ownership of the partition. A Consumer may consume 2 or more partitions.
+	- If a single Consumer of the group fails, the remaining members of the group will rebalance and the other Consumers will take over its partitions.
+	- A Kafka server is called a broker. It receives messages from Producers, stores them on disk, and responds to fetch requests from Consumers for partitions and responds with the messages saved on disk.
+	- A single broker can handle 1000s of partitions and millions of messages per second.
+	- Brokers are designed to operate as part of a cluster. Within a cluster, one broker will be designated as the cluster controller (elected automaticaly)
+	- A partition is owned by a single broker (leader of the partition) in the cluster. A partition may be assigned to multiple brokers (replicated).
+	- Replicating brokers are called ISR (In-Sync Replica).
+	- The leader and the ISR broker of a partition is determined by Zookeeper.
+	- Retention: brokers are configured with a retention period for topics: either until a topic reaches a certain size (eg 1GB ) of a period of time (eg 7 days).
+	- Individual topics can also be configured with their own retention.
+	- "Log compacted" retention: kafka will retain only the last message produced with a specific key. (Useful for changelog-type)
+	- Kafka supports even multiple Cluster throgh a tool called MirrorMaker that is both a Producer and a Consumer.
+	- Consumers as part of a CG, process every message ONLY ONCE.
+	- Disk-Based Retention: If a consumers crashes or it is stopped for maintenance, kafka will persist the Topic, until the messages are consumed back, with a configurable retention period or size.
+	- Scalability: Kafka can be scaled up and down (number of brokers) without stopping the processing.
+	
+General:
+	If a cluster has multiple brokers, after connecting to any broker (called the bootstrap broker) you will be connected to the entire cluster.
+	A good number of brokers is 3.
+	A good replication factor for partition is 2 or 3. (3 is best).
+	- Each Consumer from a CG reads data from an exclusive set of partitions (the same partition is read by only one Consumer)
+	- If there are more Consumers than partitions, some Consumers will be inactive.
+	- Multiple Consumer groups can read data from the same partition at the same time. The read offset is independent per CG.
+	- The offsets committed by a CG for a topic are stored in a topic called: __consumer_offsets.
+	- Once a consumer eats data from a topic, it commits the last offset that was successfully eaten.
+	- If a consumer dies, when he awakes he will start reading from where he left.
+	- Delivery semantics for Consumers (consumers choose when to commit offsets)
+		- at most once: commit when the message is received (not processed)
+		- at least once (commit after msg is processed). This way we can read the same message multiple times, but process it successfully only once. So the processing
+			must be IDEMPOTENT.
+		- exactly once. Can only be achieved using Kafka=>Kafka using Kafka Streams API.
+	- Every Kafka Broker is called a "bootstrap server". You only need to connect to one broker, and you will be connected to the entire cluster.
+	- Each broker knows about all brokers from the cluster, topics and partitions (metadata).
+	- Zookeeper manages the brokers (keeps a list of them), and elects the leader broker.
+	- Zookeeper sends notifications to kafka about topic creation/deletion, partitions, etc.
+	- Kafka can't work without Zookeeper.
+	- When a new Consumer enters an existing CG, the CG will re-balance, i.e the partition/consumer mapping will update so that the new Consumer is taken into consideration.
+	- Multiple CGs can consume the same topic, and messages will be duplicated to each CG. So if we have a topic and we want to broadcast its messages to 5 consumers, 
+		we need to create 5 different CGs, one per each consumer.
+	- It is very important to set a correct number of partitions and replicas count per topic from the start. Altering them in a running system will break the key ordering and may get the cluster unstable.
+	- Replication factor should be at least 2, usually 3, maximum 4.
+	- Never ever set RF to 1 in production.
+	A single Kafka broker should not have more than 2K to 4K partitions across all its topics.
+	- A Kafka cluster should have a maximum of 20K partitions across all brokers. In case of brokers going down, Zookeeper needs to perform a lot of leader election for each partition.
+	
+	- Partitions are mde of segments (files). Each segment has a start and end offset. The last segment is called the ACTIVE segment (because it is still written to).
+	- Only 1 segment is ACTIVE for a partition.
+	- The size of a segment (from a partition) is controlled with log.segment.bytes (default 1GB) setting. 
+		- log.segment.ms (default 1 week): the time Kafka will wait before committing the segment if not full.
+		- info about segments can be found in data/kafka/topicName-PartitionIndex.
+
+Log cleanup policies:
+	- log.cleanup.policy=delete (default for all topics - 1 week).
+		- deletes based on age - default 1 week.
+		- deletes based on max size of log - default is Infinite.
+		- log.retention.hours (default 168h = 1 week)
+		- log.retention.bytes (default Infinite): max size in bytes for each partition.
+		
+	- log.cleanup.policy=compact (default for the consumer_offset topic). Deletes based on the keys of the messages.
+		- deletes old duplicate keys of your messages.
+
+	- log.cleaner.backoff.ms (default 15sec): how often do we check for log cleanup.
+		
+	- Log cleanup policy allows you for infinite time and space retention.
+
+Log compaction:
+	- ensures that your log contains at least the last known value for a specific key within a partition.
+	- very usefull if we just require a SNAPSHOT instead of the full history (such as a table in a database).
+	- the idea is that we keep in kafka only the lastest 'update' for a key in our log.
+	- When doing log compactiin, the offsets withing the segments of the remaining KVPs do not change, even if we deleted old duplicate keys (and their associated values), and they are not reordered.
+	- it does not prevent you from pushing duplicate data to kafka. - it only happens after a segment is committed.
+	- it happens in the background in an async thread and it is transparent to the user, you cannot trigger it by an api.
+		- segment.ms (default 7 days): how long to wait to close active segment.
+		- segment.bytes (default 1GB): max size of a segment.
+		- min.compaction.lag.ms (default 0): how long to wait before a message can be compacted.
+		- delete.retention.ms (default 24h): wait before deleting data marked for compaction.
+		- min.cleanable.dirty.ratio (default 0.5): 
+
+
+
+
+
+Further reading: CQRS
+	
+	
+Kafka Connect:
+	- Already made kafka Consumers and Producers that read/write data from/to common data sources like DBs, S3s, Cassandra, Twitter API, etc.
+	- Full chain: Kafka Connect Source -> Kafka Connect Cluster -> Kafka Cluster -> Kafka Streams -> Kafka Cluster -> Kafka Connect Cluster -> Kafka Connect Sink.
+	- A good starting number is partitionCount = BrokerCount * 2;
+	= There is JDBC Connector called CDC (Change detect connector) that only reads the changed data from a DB and pushes it into Kafka. - Debezium.
+Kafka Streams:
+	- It is a standalone application, similar to a Consumer or a producer, that reads data from a topic, processes it, and then writes back data to another topic.
+	
+Confluent Schema Registry:
+	- Imposes data format validation on consumer and producer. Whithout this, if the Producer sends the data in a changed format, the Consumers would crash.
+	- It uses Apache Avro as the data format (you cannot send your messages in json format anymore)
+	- Producers send schema to the Schema Registry, and the Consumer gets the Schema from the SR.
+	
+	
+Commands:
+	zookeeper-shell.sh localhost:2181 ls /brokers/ids ;; get the broker list of a kafka cluster.
+
+Start zookeeper (before Kafka):
+	zookeeper-server-start.sh config/zookeeper.properties ;; if it goes well you will see binding to port 2181 in console.
+	
+Topics:
+	kafka-topics.sh --zookeeper localhost:2181 --topic first_topic --create --partitions 3 --replication-factor 1
+	kafka-topics.sh --zookeeper localhost:2181 --list
+	kafka-topics.sh --zookeeper localhost:2181 --topic first_topic --describe (See leader, replicas, ISRs for each partition)
+	kafka-topics.sh --zookeeper localhost:2181 --topic second_topic --delete
+	
+	kafka-topics.sh --zookeeper localhost:2181 --create --topic employee-salary --partitions 1 --replication-factor 1 --config cleanup.policy=compact --config min.cloneable.dirty.ratio=0.001 --config segment.ms=5000
+	
+Producer:
+	kafka-console-producer.sh --broker-list localhost:9092 --topic first_topic
+	kafka-console-producer.sh --broker-list localhost:9092 --topic first_topic --producer-property=acks=all
+	- if we send data to a non-existent topic, it will be automatically created upon first received message.
+	kafka-console-producer.sh --broker-list localhost:9092 --topic employee-salary --property parse.key=true --property key.separator=, // once we start introducing elements, we can separate the key from the value by ','.
+	
+Consumer:
+	kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic
+	kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --from-beginning
+	kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --group my-group
+	kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic --from-beginning --property print.key=true --property key.separator=, //prints keys and values, separated by a comma.
+	
+Configs:
+	kafka-configs.sh --zookeeper localhost:2128 --entity-type topics --entity-name topic1 --describe
+	kafka-configs.sh --zookeeper localhost:2128 --entity-type topics --entity-name topic1 --add-config (see available by simply issuing kafka-configs.sh empty params)
+	kafka-configs.sh --zookeeper localhost:2128 --entity-type topics --entity-name topic1 --add-config min.insync.replicas=2 --alter
+	kafka-configs.sh --zookeeper localhost:2128 --entity-type topics --entity-name topic1 --delete-config min.insync.replicas=2 --alter
+	

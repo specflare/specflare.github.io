@@ -13,6 +13,14 @@ pythonLines.first
 val words = fileLines.flatMap(_.split(" ")) // convert lines into words
 val counts = words.map(word => (word, 1)).reduceByKey{case (x, y) => x + y}
 
+Starting a local cluster:
+
+./sbin/start-master.sh
+./bin/spark-class org.apache.spark.deploy.worker.Worker  spark://`hostname`:7077 -c 1 -m 512M
+
+bin/run-example SparkPi
+./bin/spark-submit --class org.apache.spark.examples.SparkPi --master spark://`hostname`:7077 ./examples/jars/spark-examples_2.12-3.0.1.jar
+
 Ch3: Programming with RDDs:
 	- An RDD in Spark is simply an immutable distributed collection of objects. 
 	- Transformation & Action for RDDs. Transformations like map, filter, reduce return a new RDD. Action triggers the computation of the pipeline.
@@ -42,6 +50,11 @@ Ch3: Programming with RDDs:
 	- If you attempt to cache too much data to fit in memory, Spark will automatically evict old partitions using a Least Recently Used (LRU) cache policy.
 	- When you call collect() on an RDD, all data returned by it must fit in RAM on the current node. (In most practical cases, most RDDs cannot be collect()ed because they are too large).
 
+	lines = sc.textFile("../README.md")
+	val wordsOccurences = lines.flatMap(_.split(" ")).map(w => (w, 1)).reduceByKey((x, y) => x + y)
+	wordsOccurences.take(10).foreach(println)
+	
+	
 Ch4: Working with Key/Value pairs:
 	- KV RDDs are commnly used to perform aggregations, and often we use some ETL (extract, transform, load) to get our data in K-V format. These RDDs are called Pair-RDDs.
 	- Pair RDDs are still RDDs of Tuple2 in Java/Scala.
@@ -49,6 +62,10 @@ Ch4: Working with Key/Value pairs:
 
 	- PairRDDs have a reduceByKey() method that can aggregate data separately per each key.
 		- pairRdd.reduceByKey()
-		- pairRdd.geoupByKey()
+		- pairRdd.groupByKey()
 		- pairRdd.mapValues()
-		- 
+		
+Ch7: Running Spark on a Cluster
+	- In distributed mode, Spark uses a master/slave architecture with one central coordinator and many distributed workers. The central coordinator is called the driver.
+	- The driver communicates with a potentially large number of distributed workers called executors. The driver runs in its own Java process and each executor is a separate Java process. 
+	A driver and its executors are together termed a Spark application.
