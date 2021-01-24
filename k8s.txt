@@ -1,0 +1,36 @@
+Kubernetes:
+
+	minikube version
+	minikube start (as non root)
+
+Getting information about a running cluster:
+	kubectl get deployments
+	kubectl get rs ;; gets the ReplicaSets created by a deployment.
+	kubectl get pods --show-labels
+	kubectl rollout status deployment/nginx-deployment
+	kubectl describe deployments
+	kubectl get service --all-namespaces
+
+kubectl version
+kubectl cluster-info
+kubectl get nodes
+kubectl get nodes --help
+kubectl drain <nodeName> ;; remove all pods for that node
+
+# create a k8s deployment
+kubectl create deployment kubernetes-bootcamp --image=gcr.io/google-samples/kubernetes-bootcamp:v1
+
+
+
+
+# A Pod is a Kubernetes abstraction that represents a group of one or more application containers (such as Docker or rkt), 
+# and some shared resources for those containers
+Every node has:
+	1. a kubelet, communicating between the node and master.
+	2. a container runtime, like docker.
+	
+kubectl describe pods ; see what containers are inside each pod
+
+# execute commands inside the POD:
+kubectl exec $POD_NAME env
+kubectl exec -ti $POD_NAME bash ;; execute the bash inside the POD.

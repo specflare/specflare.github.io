@@ -1,8 +1,21 @@
-Angular7+ cheatsheet
+Angular cheatsheet
 
 ng new --style=scss --routing prj
 prj
 ng serve -o
 ng serve --host 0.0.0.0 --port 80
-ng generate component sidebar
+ng generate component sidebar / ng g c sidebar
 
+Event binding
+	(click)="OnButtonClicked1"
+Data binding:
+	[]
+bidirectional data binding:
+	[()]
+Directives:
+	- can be attached to any HTML element like buttons, <p>, labels, etc)
+	- multiple directives can be attached to the same element.
+	*ngIf, 
+	ngFor: <p *ngFor="let piter of ps; let i = index"></p>
+	ngStyle, ngClass
+	*ngIf : structural directive.

@@ -21,6 +21,8 @@ Most learning algorithms have multiple params that can affect results, so real w
 * Linear regression: modelling the relationship between a scalar response (dependent var) and one or more independent variables. If only one input var (indep var) => Simple linear regression. If multiple input vars => Multiple Linear Regression.
 * Multivariate Linear Regression => multiple output variables are predicted based on the input(s).
 
+* Cathegorical variable: Has a value within a given set, for instance var Location = {Bucharest, Craiova, Dublin}.
+
 ML can be split in:
 	- Supervised Learning (develop predictive model based on both input and output data)
 		- Classification (output is a choice between classes/labels: true/false. red/green/blue).
@@ -38,7 +40,17 @@ ML can be split in:
 	- Reinforcement Learning.
 	
 Method 1: Linear Regression. 
-	Given a set of points int the n-th dimensional space, we try to aproximate them with a line. For new points the aproximation will be this line.
+	- Given a set of points int the n-th dimensional space, we try to aproximate them with a line. For new points the aproximation will be this line.
+	- The predicted variable is a single scalar variable in Linear Regression.
+	- If multiple correlated dependent variables are predicted => multivariate linear regression.
+
+		- simple linear regression: the space is 1-dimensional => Y = B0 + B1 * X;
+			- examples:
+				- approximate the weight of a person given its height.
+
+		- multiple linear regression: the space is n-dimensional => Y = B0 + B1 * X1 + B2 * X2 + ... + Bn * Xn;
+				- approximate the profit of a company given its R&D Spending, Admin spending, Marketing Spending, NumEmployees and Location.
+				
 	
 Method 2: k-NN: k-Nearest Neighbor
 	- We find the k-nearest points in the input set (by a metric specified by us, like the Euclidian distance), and we average their responses.
