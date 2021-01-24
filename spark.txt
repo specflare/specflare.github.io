@@ -1,4 +1,17 @@
 Learning Spark - O'Reilly:
+Introduction
+	Every Spark app has a Driver and multiple Executors that run inside a Cluster.
+	A Spark app can be run in 2 modes: Client Mode, Cluster Mode.
+	In client mode, the Driver app runs on the client machine, and connects to the Executors inside the Spark Cluster.
+	In Cluster mode, the Driver runs along the Executors inside the Cluster.
+	- Cluster mode makes more sens in Production.
+	- When debugging things or exploring, Client mode is better.
+
+Running a Spark cluster locally:
+	./sbin/start-master.sh
+	./bin/spark-class org.apache.spark.deploy.worker.Worker  spark://localhost:7077 -c 1 -m 512M
+	./bin/spark-submit  --class org.apache.spark.examples.SparkPi   --master spark://localhost:7077  lib/spark-examples-1.2.1-hadoop2.4.0.jar
+	
 Ch2: Downloading spark and getting started
 	- open bin/spark-shell for the Scala Shell
 	- Spark is a library that is used from a driver program/function. Driver programs access Spark through a SparkContext object, which represents a connection to a computing cluster
