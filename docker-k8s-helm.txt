@@ -1,4 +1,30 @@
-Kubernetes:
+===== Docker =====
+
+	Ch1: Introduction
+	Container = Sandbox = "Jail"
+	Docker is NOT a virtualization technology. Instead, it helps you use the container technology already built into your operating system. (It is just a sandboxing technology)
+	On OS X and Windows, Docker uses a single, small virtual machine to run all the containers. (On Linux it runs natively)
+	
+Ch2:
+	detached/interactive containers (daemon / cli-bound)
+	docker run --detach --name web nginx:latest
+	docker run -d --name mailer
+	
+	docker run --interactive --tty --link web:web --name web_test busybox:latest /bin/shi
+
+docker run --name mantis-postgres -e POSTGRES_PASSWORD=QAZxsw123 -e POSTGRES_USER=root -d postgres
+
+docker run -p 80:80 \
+    -e 'PGADMIN_DEFAULT_EMAIL=petascalr@gmail.com' \
+    -e 'PGADMIN_DEFAULT_PASSWORD=QAZxsw123' \
+    -e 'PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True' \
+    -e 'PGADMIN_CONFIG_LOGIN_BANNER="Authorised users only!"' \
+    -e 'PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10' \
+    -d dpage/pgadmin4
+    
+docker inspect <containerID>
+
+===== Kubernetes =====
 
 02. Introduction
 	- kubectl sends commands to the kube-apiserver (REST). The same commands could be sent using curl.
@@ -150,3 +176,6 @@ Runs the GO template generator and replaces all go code with actual code:
 # execute commands inside the POD:
 kubectl exec $POD_NAME env
 kubectl exec -ti $POD_NAME bash ;; execute the bash inside the POD.
+
+===== Helm =====
+
