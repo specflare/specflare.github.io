@@ -1,0 +1,31 @@
+SSL / TLS / Cryptography
+
+Symmetric key encryption (one key only):
+- Diffie Hellman Key Exchange
+- DES3: Best known same key cipher available
+- DES: will eventually replace DES3.
+- RC4
+- DES: 56 bit keys
+
+Asymetric (Public Key) Encryption
+- each peer has 2 keys (public + private)
+- public keys are usually sent along with a certificate
+- Drawback: slow for large messages
+- use it as little as possible
+- it is used generally for agreeing on an encryption key for a symmetric algorithm (used in key exchange phase)
+- RSA: most popular
+- big bitlength for keys
+- ECC: Elliptic Curve Criptography: same purpose as public keys but faster with smaller keys
+
+Hashes and MACs:
+- md5: 128 bit hash function
+- sha1: 160 bits hash function
+- taking the output nobody should be able to algoritmically construct an input.
+- hashes are also used for password storage
+- MACs: keyed hashes; hasing with data+a shared secret.
+- HMAC: can be used with any message digest algorithm.
+
+Digital signatures:
+- public key and private keys are interchangeable
+- MACS are not any usefull because they require a shared key.
+
