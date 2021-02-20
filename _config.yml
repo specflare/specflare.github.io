@@ -20,7 +20,7 @@ title                    : "Specflare"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "Liviu Gheorghisan"
-description              : "Blogging about Linux, JVM echosystem and networking."
+description              : "Software Demystified."
 url                      : https://www.specflare.com # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
