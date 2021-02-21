@@ -4,6 +4,10 @@ main:
   #  url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
   - title: "Home"
     url: /index.html
+  - title: "Tags"
+    url: /tags/
+  - title: "Archive"
+    url: /year-archive/
   - title: "About"
     url: /about/
   # - title: "Sample Collections"
