@@ -1,29 +1,37 @@
 SSL / TLS / Cryptography
 
-Symmetric key encryption (one key only):
-- Diffie Hellman Key Exchange
-- DES3: Best known same key cipher available
-- DES: will eventually replace DES3.
-- RC4
-- DES: 56 bit keys
+Introduction
+	- Secure Socket Layer (SSL) was invented in 1994 by Netscape.
+	- TLS was created by IETF as a successor to SSL.
+
+
+Symmetric key encryption algorithms (one secret key only):
+	- Symmetric-key algorithms[a] are algorithms for cryptography that use the same cryptographic keys for both encryption of plaintext and decryption of ciphertext.
+	- 2 types: Block ciphers & Stream ciphers.
+		- DES (56 bit key, 64 bit block size), 
+		- 3DES (key sizes: 168, 112, 56 bits), block size: 64 bits.
+		- AES: key sizes: 128, 192 or 256 bits. block sizes: 128 bits.
+		- RC4: stream cipher.
+	- Diffie Hellman Key Exchange
+
+Hashes:
+	- md5: 128 bit hash function
+	- sha1: 160 bits hash function
+	- taking the output nobody should be able to algoritmically construct an input.
+	- hashes are also used for password storage
+
+MACs / HMACs: Message Authentication Codes
+	- keyed hashes; hasing with data+a shared secret.
+	- MAC is a string of bits that is sent alongside a message. The MAC depends on the message itself and a secret key. No one should be able to compute a MAC without knowing the key.
+	- HMAC is a recipe for turning hash functions (such as MD5 or SHA256) into MACs. So HMAC-MD5 and HMAC-SHA256 are specific MAC algorithms, just like QuickSort is a specific sorting algorithm.
 
 Asymetric (Public Key) Encryption
-- each peer has 2 keys (public + private)
-- public keys are usually sent along with a certificate
-- Drawback: slow for large messages
-- use it as little as possible
-- it is used generally for agreeing on an encryption key for a symmetric algorithm (used in key exchange phase)
-- RSA: most popular
-- big bitlength for keys
-- ECC: Elliptic Curve Criptography: same purpose as public keys but faster with smaller keys
-
-Hashes and MACs:
-- md5: 128 bit hash function
-- sha1: 160 bits hash function
-- taking the output nobody should be able to algoritmically construct an input.
-- hashes are also used for password storage
-- MACs: keyed hashes; hasing with data+a shared secret.
-- HMAC: can be used with any message digest algorithm.
+	- each peer has 2 keys (public + private).
+	- public keys are usually sent along with a certificate.
+	- Drawback: slow for large messages - use it as little as possible - big bit-length for keys.
+	- it is used generally for agreeing on an encryption key for a symmetric algorithm (used in key exchange phase)
+	- RSA: most popular
+	- ECC: Elliptic Curve Criptography: same purpose as public keys but faster with smaller keys.
 
 Digital signatures:
 - public key and private keys are interchangeable
