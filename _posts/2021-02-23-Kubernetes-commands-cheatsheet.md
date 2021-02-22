@@ -7,8 +7,9 @@ tags:
   - kubectl
 
 date: February 23, 2021
-
-excerpt: "This is a curated list of Kubernetes (kubectl) commands used most often."
+layout: single
+classes: wide
+excerpt: "This is a curated list of Kubernetes (kubectl) commands that are most frequently used."
 ---
 
 This is intended to be a curated list of the most often used Kubernetes (kubectl) commands.
