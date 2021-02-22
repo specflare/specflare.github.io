@@ -13,8 +13,8 @@ excerpt: "This is a curated list of Kubernetes (kubectl) commands that are most 
 ---
 
 This is intended to be a curated list of the most often used Kubernetes (kubectl) commands.
-I assume you already have some knowledge with the basic Kubernetes building blocks: Nodes, Pods, Deployments, ReplicaSets, etc.
-For some of the commands I will also include their output in part or in full.
+I assume you already have some knowledge of the basic Kubernetes building blocks: Nodes, Pods, Deployments, ReplicaSets, etc.
+For some commands I will also include their output in part or in full.
 
 ## Getting information about the Kubernetes API (Kubernetes objects that you can configure)
 ```bash
@@ -67,7 +67,7 @@ FIELDS:
 [liviu@kub]$ kubectl explain pods.spec.tolerations
 [liviu@kub]$ kubectl explain pods.metadata
 [liviu@kub]$ kubectl explain pods.metadata.uid
-# You can go like this as far as you want
+# You can go like this as deep as you want into the YAML tree
 
 # Most commands have specific options, but all commands have some common options, that can be found here:
 [liviu@kub]$ kubectl options
@@ -146,7 +146,7 @@ Difference between `create` and `apply`:
 ```bash
 [liviu@kub]$ kubectl rollout history deploy -n myns  # get rollout history of all deployments from namespace 'ns'
 
-# This one is usefull if you want to see if the Docker image was changed between rollouts.
+# This one is useful if you want to see if the Docker image was changed between rollouts.
 [liviu@kub]$ kubectl rollout history deploy mydeploy
 [liviu@kub]$ kubectl rollout history deploy mydeploy --revision=2
 
