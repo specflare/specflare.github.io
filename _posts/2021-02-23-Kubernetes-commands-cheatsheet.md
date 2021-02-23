@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes commands cheat sheet"
+title: "Kubernetes (kubectl) commands cheat sheet"
 toc: true
 toc_label: "Contents"
 tags:
@@ -40,9 +40,9 @@ ingresses                         ing          networking.k8s.io              tr
 ... (some list elements were omitted)
 ```
 
-The first column (NAMES) tells us the object name, that we can use further like: `kubectl get nodes` or `kubectl get services`.  
-The second column (SHORTNAMES) tells us the shortname of the object, so we can substitute `services` with `svc` or `configmaps` with `cm`.  
-The forth column (KIND) is the object name that we can use in the `kind` attribute when applying YAML configuration declaratively.  
+The first column `NAMES` tells us the object name, that we can use further like: `kubectl get nodes` or `kubectl get services`.  
+The second column `SHORTNAMES` tells us the shortname of the object, so we can substitute `services` with `svc` or `configmaps` with `cm`.  
+The forth column `KIND` is the object name that we can use in the `kind` attribute when applying YAML configuration declaratively.  
 
 When applying configuration with YAML files, we need to know the possible YAML fields that each object type supports. We can find out this information with the `kubectl explain` command, like this:
 ```bash
@@ -102,7 +102,8 @@ mynamespace                         Active   12d
 [liviu@kub]$ kubectl get deploy,svc -n ptc-default
 
 # get PersistentVolumes sorted by capacity
-[liviu@kub]$ kubectl get pv --sort-by=.spec.capacity.storage # object specific fields can be inspected with `kubectl explain`
+[liviu@kub]$ kubectl get pv --sort-by=.spec.capacity.storage 
+# object specific fields can be inspected with `kubectl explain pv.spec.capacity.storage`
 
 # get all running pods in the namespace
 [liviu@kub]$ kubectl get pods --field-selector=status.phase=Running -n mynamespace
@@ -120,10 +121,11 @@ mynamespace                         Active   12d
 
 ## Editing a Kubernetes object
 ```bash
-# To specify the text editor, use the environment variable KUBE_EDITOR
 [liviu@kub]$ kubectl edit deploy mydeploy
-[liviu@kub]$ kubectl edit svc myservice
-[liviu@kub]$ kubectl scale deploy mydeploy --replicas=3 # creates 3 instances of a given deployment
+
+# To specify the text editor, use the environment variable KUBE_EDITOR
+[liviu@kub]$ KUBE_EDITOR="nano" kubectl edit svc myservice
+[liviu@kub]$ kubectl scale deploy mydeploy --replicas=3 # scales mydeploy to 3 instances
 ```
 
 ## Creating new objects or altering existing objects
@@ -131,7 +133,8 @@ mynamespace                         Active   12d
 [liviu@kub]$ kubectl create ns dev          # creates namespace 'dev'
 [liviu@kub]$ kubectl create -f obj.yaml     # creates the object defined in obj.yaml
 
-# Compares the current state of the cluster against the state that the cluster would be in if the obj.yaml was applied.
+# Compares the current state of the cluster against the state that the cluster would be
+# in if the obj.yaml was applied.
 [liviu@kub]$ kubectl diff -f ./obj.yaml
 
 # Create a deployment in imperatively.
@@ -196,5 +199,5 @@ Sometimes we need to run a command from inside a Pod (e.g. bash). Imagine we hav
 ```bash
 [liviu@kub]$ kubectl logs mypod -n mynamespace # get logs of Pod mypod from ns mynamespace
 [liviu@kub]$ kubectl logs mypod --all-containers=true # in case mypod has multiple containers
-
+[liviu@kub]$ kubectl logs --since=1h mypod
 ```
