@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes commands cheatsheet"
+title: "Kubernetes commands cheat sheet"
 toc: true
 toc_label: "Contents"
 tags:
@@ -83,11 +83,23 @@ NAME                                 STATUS   ROLES    AGE   VERSION
 master-worker-b437e0341e817eb334f2   Ready    master   12d   v1.18.10
 
 [liviu@kub]$ kubectl get namespaces     # or 'ns'
-[liviu@kub]$ kubectl get deploy         # or 'deployments'
+NAME                                STATUS   AGE
+default                             Active   13d
+kube-node-lease                     Active   13d
+kube-public                         Active   13d
+kube-system                         Active   13d
+mynamespace                         Active   12d
+[liviu@kub]$ kubectl get deploy -n mynamespace # get deployments from mynamespace
 [liviu@kub]$ kubectl get pods -o wide
 [liviu@kub]$ kubectl get pod mypod -o yaml # outputs the YAML config used to create my-pod
 [liviu@kub]$ kubectl get pods --show-labels # labels are important for Pods because they connect them to Services.
 [liviu@kub]$ kubectl get pods -l 'environment in (prod),tier in (frontend)' # filter Pods by labels.
+
+# Get pods running on a specific Node
+[liviu@kub]$ kubectl get pods --field-selector=spec.nodeName=mynode
+
+# Get list of Deployments and Services at the same time
+[liviu@kub]$ kubectl get deploy,svc -n ptc-default
 
 # get PersistentVolumes sorted by capacity
 [liviu@kub]$ kubectl get pv --sort-by=.spec.capacity.storage # object specific fields can be inspected with `kubectl explain`
@@ -108,6 +120,7 @@ master-worker-b437e0341e817eb334f2   Ready    master   12d   v1.18.10
 
 ## Editing a Kubernetes object
 ```bash
+# To specify the text editor, use the environment variable KUBE_EDITOR
 [liviu@kub]$ kubectl edit deploy mydeploy
 [liviu@kub]$ kubectl edit svc myservice
 [liviu@kub]$ kubectl scale deploy mydeploy --replicas=3 # creates 3 instances of a given deployment
@@ -157,6 +170,8 @@ Difference between `create` and `apply`:
 ```bash
 [liviu@kub]$ kubectl delete namespace myns
 [liviu@kub]$ kubectl delete deploy mydeploy
+# Deletes Pods and Services by label
+[liviu@kub]$ kubectl delete pods,services -l lkey=lval
 [liviu@kub]$ kubectl drain mynode # removes all pods scheduled on mynode
 ```
 
@@ -166,4 +181,20 @@ Difference between `create` and `apply`:
 [liviu@kub]$ kubectl auth can-i create deploy -n your-namespace
 [liviu@kub]$ kubectl auth can-i create pods --as liviu --namespace apps
 [liviu@kub]$ kubectl auth can-i '*' '*' # check if I can do anything
+```
+
+## Getting inside your pods
+Sometimes we need to run a command from inside a Pod (e.g. bash). Imagine we have a Pod running Postgres and we need to access 'psql' so we can see the contents of a table.
+```bash
+[liviu@kub]$ kubectl exec --stdin --tty mypod -n myns -- /bin/sh
+
+# See the contents of '/' inside Pod from Namespace myns
+[liviu@kub]$ kubectl exec -it mypod -n myns -- ls /
+```
+
+## Getting the logs of a given pod
+```bash
+[liviu@kub]$ kubectl logs mypod -n mynamespace # get logs of Pod mypod from ns mynamespace
+[liviu@kub]$ kubectl logs mypod --all-containers=true # in case mypod has multiple containers
+
 ```
