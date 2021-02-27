@@ -49,6 +49,7 @@ OPENSSLDIR: "/usr/lib/ssl"
 ENGINESDIR: "/usr/lib/x86_64-linux-gnu/engines-1.1"
 Seeding source: os-specific
 ```
+
 The most interesting configs here are the build date and the folder where OpenSSL keeps its configuration: OPENSSLDIR.
 
 Getting the available commands:
@@ -155,8 +156,6 @@ $ openssl ecparam -genkey -name secp256r1 | openssl ec -out ec.key -aes128
 
 # Get list of ECs
 $ openssl ecparam -list_curves
-
-
 ```
 
 ## Generating a CSR (Certificate Signing Request) with OpenSSL
@@ -208,7 +207,7 @@ $ openssl req -new -x509 -days 365 -key specflare.key -out specflare.crt -subj "
 # See the generated certificate
 $ openssl x509 -text -in specflare.crt -noout
 
-# Checking if the moduli match for the private key, CSR and certificate
+# Checking if the modulus match for the private key, CSR and certificate
 $ openssl x509 -noout -modulus -in specflare.crt | openssl md5
 $ openssl rsa -noout -modulus -in specflare.key | openssl md5
 $ openssl req -noout -modulus -in specflare.csr | openssl md5
