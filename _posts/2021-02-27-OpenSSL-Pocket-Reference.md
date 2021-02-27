@@ -138,11 +138,14 @@ $ openssl genrsa -aes128 -out my.key 2048
 # Output RSA key details
 $ openssl rsa -text -in my.key
 
-# Extract public key from the RSA key
-$ openssl rsa -in fd.key -pubout -out fd-public.key
+# Extract just the public key from the RSA key
+$ openssl rsa -in specflare.key -pubout -out specflare-public.key
 
 # Extract just the private key from the RSA key
-$ openssl rsa -in fd.key -pubout -out fd-public.key
+$ openssl rsa -in specflare.key -out specflare-private.key
+
+# Verify a private key
+$ openssl rsa -in specflare-private.key -check
 
 # Generate a 2048-bit DSA key encrypted with aes128
 $ openssl dsaparam -genkey 2048 | openssl dsa -out dsa.key -aes128
@@ -152,6 +155,8 @@ $ openssl ecparam -genkey -name secp256r1 | openssl ec -out ec.key -aes128
 
 # Get list of ECs
 $ openssl ecparam -list_curves
+
+
 ```
 
 ## Generating a CSR (Certificate Signing Request) with OpenSSL
@@ -176,6 +181,9 @@ Certificate Request:
             a0:00
     Signature Algorithm: sha256WithRSAEncryption
          (... omitted bulk of data ...)
+
+# Verify CSR
+$ openssl req -text -noout -verify -in specflare.csr
 ```
 
 ### Generating CSRs from existing certificates - for certificate renewal
@@ -199,6 +207,11 @@ $ openssl req -new -x509 -days 365 -key specflare.key -out specflare.crt -subj "
 
 # See the generated certificate
 $ openssl x509 -text -in specflare.crt -noout
+
+# Checking if the moduli match for the private key, CSR and certificate
+$ openssl x509 -noout -modulus -in specflare.crt | openssl md5
+$ openssl rsa -noout -modulus -in specflare.key | openssl md5
+$ openssl req -noout -modulus -in specflare.csr | openssl md5
 ```
 
 ### Converting a certificate (or key) from one form to another
