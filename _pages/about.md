@@ -21,7 +21,7 @@ I am currently working as a Lead/Senior Software Engineer for VIAVI Solutions, d
 
 I enjoy sharing the things I learned so you can get a head start.
 
-Feel free to [contact me](mailto: specflare@gmail.com) if you find my blog useful or you are interested in any kind of collaboration.
+Feel free to [contact me](mailto: liviu@specflare.com) if you find my blog useful or you are interested in any kind of collaboration.
 
 ### Keywords:
 Linux, Java, Scala, Networking, Kafka, Spark, Spring, Hibernate, Cloud, Kubernetes.
