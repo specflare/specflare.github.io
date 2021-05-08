@@ -16,7 +16,7 @@ minimal_mistakes_skin    : "contrast" # "air", "aqua", "contrast", "dark", "dirt
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Specflare Blog"
+title                    : "specflare.com"
 title_separator          : "-"
 subtitle                 : "Articles on Linux, Java, Scala, Kafka and more" # site tagline that appears below site title in masthead
 name                     : "Liviu Gheorghisan"
