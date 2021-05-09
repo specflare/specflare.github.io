@@ -10,7 +10,7 @@ tags:
 date: February 27, 2021
 layout: single
 classes: wide
-excerpt: "OpenSSL Pocket Reference - using the most common commands."
+excerpt: "Using the most common OpenSSL commands to generate your own keys, certificates or certificate authorities (CAs)."
 ---
 
 ## Introduction

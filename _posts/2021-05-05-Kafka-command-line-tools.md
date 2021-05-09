@@ -1,5 +1,5 @@
 ---
-title: "Kafka CLI"
+title: "Kafka command-line tools"
 toc: true
 toc_label: "Contents"
 tags:
@@ -8,7 +8,7 @@ tags:
 date: May 05, 2021
 layout: single
 classes: wide
-excerpt: "Kafka command-line interface - most used commands."
+excerpt: "Kafka command-line tools that you can use to troubleshoot your Kafka clusters."
 ---
 
 ## Introduction
