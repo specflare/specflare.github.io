@@ -21,7 +21,7 @@ I enjoy sharing the things I learned so you can get a head start.
 Feel free to [contact me](mailto: liviu@specflare.com) if you find my blog useful or you are interested in any kind of collaboration.
 
 ### Keywords:
-Linux, Java, Scala, Networking, Kafka, Spark, Spring, Hibernate, Cloud, Kubernetes.
+Linux, Java, Scala, Networking, Kafka, Spark, Spring, Hibernate, AWS, Kubernetes.
 
 ### Hobbies:
 I like travelling (especially before the pandemic), hiking and jogging. I also play some old-school video games (like Starcraft 2 or Warcraft 3) from time to time.
