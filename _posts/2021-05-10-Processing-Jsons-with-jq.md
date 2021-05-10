@@ -21,7 +21,7 @@ The simplest invocation of jq is to just beautify the JSON input:
 ```bash
 $ curl 'https://jsonplaceholder.typicode.com/users' | jq '.'
 ```
-As you see, for these examples we will use the JsonPlaceholder testing API. It will generate us a Json containig 10 different users with this structure:
+As you see, for these examples we will use the JsonPlaceholder testing API. It will generate us a JSON containig 10 different users with this structure:
 ```json
 [
   {
